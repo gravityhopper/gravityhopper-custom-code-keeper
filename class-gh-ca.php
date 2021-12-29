@@ -259,9 +259,9 @@ class GH_CA extends GFAddOn {
 
         $mustuse_filename = WPMU_PLUGIN_DIR . '/gravityhopper-code-abode-loader.php';
         
-        if ( ! file_exists( $mustuse_filename ) || ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CA_DIR_PATH . '/gravityhopper-code-abode-loader.php' ) ) ) {
+        if ( ! file_exists( $mustuse_filename ) || ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CA_DIR_PATH . '/mu-plugin/gravityhopper-code-abode-loader.php' ) ) ) {
             
-            $result = copy( GRAVITYHOPPER_CA_DIR_PATH . '/gravityhopper-code-abode-loader.php', $mustuse_filename );
+            $result = copy( GRAVITYHOPPER_CA_DIR_PATH . '/mu-plugin/gravityhopper-code-abode-loader.php', $mustuse_filename );
 
             $log_type = $result ? 'debug' : 'error';
 
