@@ -135,8 +135,8 @@ class GH_CA extends GFAddOn {
                         />
                         <label class="gform-settings-panel__collapsible-toggle" for="gform_settings_section_collapsed_uninstall"><span class="screen-reader-text"><?php printf( esc_html__( 'Toggle %s Section', 'gravityforms' ), 'Global Code' ); ?></span></label>
                     </span>
-                <div class="gform-settings-panel__content">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0;"><?= $global_file_contents; ?></pre>
+                <div class="gform-settings-panel__content" style="max-width: 858px;">
+                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0;"><?= $global_file_contents; ?></code></pre>
                 </div>
             </fieldset>
             <br />
@@ -146,15 +146,15 @@ class GH_CA extends GFAddOn {
                 <legend class="gform-settings-panel__title gform-settings-panel__title--header">
                     <?php esc_html_e( 'Form Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $form_file_name; ?></code>
                 </legend>
-                <div class="gform-settings-panel__content">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0;"><?= $form_file_contents; ?></pre>
+                <div class="gform-settings-panel__content" style="max-width: 858px;">
+                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0;"><?= $form_file_contents; ?></code></pre>
                 </div>
             </fieldset>
         <?php
             endif;
             if ( ( ! file_exists( $global_file_name ) && ! file_exists( $form_file_name ) ) || ( $global_file_contents == '' && $form_file_contents == '' ) ) :
         ?>
-            <div class="gform-settings-panel__content" style="padding: 1em;">
+            <div class="gform-settings-panel__content">
                 No custom code for this form resides in the directory at <code style="font-size: 90%; margin-left: .25em;"><?= GH_CA::$code_dir; ?></code>
             </div>
             <?php endif; ?>
