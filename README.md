@@ -6,7 +6,7 @@ Code Abode…
 1. creates a directory at `wp-content/uploads/gravity_hopper/code/`.
 1. adds a file loader as an `mu-plugin` on your site.
 1. adds a file `gf-global-code.php` *(for housing globally run code)*.
-1. generates a `gf-00xx.php` file for every new form created. *(for housing form-specific code)*
+1. optionally creates/deletes a `gf-00xx.php` file for every form created/deleted. *(for housing form-specific code)*
 1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
 1. allows exporting any number of code files to compressed .zip.
 1. introduces a form settings page whereby you can preview relevant custom code.
@@ -14,6 +14,13 @@ Code Abode…
 **Please note that Code Abode is intended for code organization only and doesn't restrict when code is run.**
 **All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
 **Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.**
+
+Use the following filters to enable auto-generation of files. Each defaults to `false`.
+
+```
+add_filter( 'gravityhopper-ca/create_file', '__return_true' );
+add_filter( 'gravityhopper-ca/remove_file', '__return_true' );
+```
 
 ### Why use it?
 Code Abode provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
