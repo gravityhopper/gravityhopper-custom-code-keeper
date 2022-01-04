@@ -61,7 +61,9 @@ class GH_CA extends GFAddOn {
         add_filter( 'gform_form_settings_menu',             [ $this, 'add_form_settings_menu_item' ],       10, 2   );
         add_action( 'gform_form_settings_page_code_abode',  [ $this, 'add_form_settings_subview_page' ]             );
 
-        add_action( 'gform_after_save_form',                [ $this, 'create_form_file' ],                  10, 2   );
+        if ( apply_filters( 'gravityhopper-ca/create_file', false ) ) {
+            add_action( 'gform_after_save_form',            [ $this, 'create_form_file' ],                  10, 2   );
+        }
 
         if ( apply_filters( 'gravityhopper-ca/remove_file', false ) ) {
             add_action( 'gform_after_delete_form',          [ $this, 'remove_form_file' ]                           );
@@ -136,7 +138,7 @@ class GH_CA extends GFAddOn {
                         <label class="gform-settings-panel__collapsible-toggle" for="gform_settings_section_collapsed_uninstall"><span class="screen-reader-text"><?php printf( esc_html__( 'Toggle %s Section', 'gravityforms' ), 'Global Code' ); ?></span></label>
                     </span>
                 <div class="gform-settings-panel__content" style="max-width: 858px;">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0;"><?= $global_file_contents; ?></code></pre>
+                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $global_file_contents; ?></code></pre>
                 </div>
             </fieldset>
             <br />
@@ -147,7 +149,7 @@ class GH_CA extends GFAddOn {
                     <?php esc_html_e( 'Form Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $form_file_name; ?></code>
                 </legend>
                 <div class="gform-settings-panel__content" style="max-width: 858px;">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0;"><?= $form_file_contents; ?></code></pre>
+                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $form_file_contents; ?></code></pre>
                 </div>
             </fieldset>
         <?php
