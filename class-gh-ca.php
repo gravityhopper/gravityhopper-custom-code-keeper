@@ -56,18 +56,16 @@ class GH_CA extends GFAddOn {
 
 		load_plugin_textdomain( 'gravityhopper-ca', false, basename( dirname( __file__ ) ) . '/languages/' );
 
+        add_action( 'admin_init',                           [ $this, 'maybe_upgrade' ]                              );
+
         self::$code_dir = GH_CA::get_upload_root();
 
         add_filter( 'gform_form_settings_menu',             [ $this, 'add_form_settings_menu_item' ],       10, 2   );
         add_action( 'gform_form_settings_page_code_abode',  [ $this, 'add_form_settings_subview_page' ]             );
 
-        if ( apply_filters( 'gravityhopper-ca/create_file', false ) ) {
-            add_action( 'gform_after_save_form',            [ $this, 'create_form_file' ],                  10, 2   );
-        }
-
-        if ( apply_filters( 'gravityhopper-ca/remove_file', false ) ) {
-            add_action( 'gform_after_delete_form',          [ $this, 'remove_form_file' ]                           );
-        }
+        add_action( 'gform_after_save_form',            [ $this, 'create_form_file' ],                  10, 2   );
+        add_action( 'gform_post_form_duplicated',       [ $this, 'duplicate_form_file' ],               10, 2   );
+        add_action( 'gform_after_delete_form',          [ $this, 'remove_form_file' ]                           );
 
         add_filter( 'gform_export_menu',                    [ $this, 'add_export_menu_item' ]                       );
         add_action( 'gform_export_page_export_gravityhopper_code_abode', [ $this, 'add_export_page' ]               );
@@ -75,6 +73,99 @@ class GH_CA extends GFAddOn {
         $this->maybe_export();
 
 	} // end constructor
+
+	/*---------------------------------------------------------------------------------*
+	* Administrative Functions
+	*---------------------------------------------------------------------------------*/
+
+    public function maybe_upgrade() {
+
+        $old_version = get_option( 'gravityhopper_ca_version', 0 );
+
+        if ( $old_version != GRAVITYHOPPER_CA_VERSION ) {
+
+            $this->do_upgrade( $old_version, GRAVITYHOPPER_CA_VERSION );
+
+        }
+
+        update_option( 'gravityhopper_ca_version', GRAVITYHOPPER_CA_VERSION, false);
+
+    }
+
+    public function do_upgrade( $old_version, $current_version ) {
+
+        GH_CA::initialize_root_folder();
+
+    }
+
+    /**
+     * Create folder after new form is created
+     *
+     * @return void
+     */
+    public static function initialize_root_folder() {
+
+		if ( ! file_exists( GH_CA::$code_dir ) ) {
+
+            $result = wp_mkdir_p( GH_CA::$code_dir );
+
+            if ( $result ) {
+                @touch( substr( GH_CA::$code_dir, 0, -5 ) . 'index.html' );
+                @touch( GH_CA::$code_dir . 'index.html' );
+            }
+
+            $log_type = $result ? 'debug' : 'error';
+            
+            GH_CA::log( $log_type, "Make directory {GH_CA::$code_dir}: {$result}", __METHOD__ );
+            
+		}
+
+        GH_CA::maybe_create_global_file();
+        GH_CA::maybe_create_mu_loader();
+        
+    }
+
+    /**
+     * Create global code file if it doesn't exist
+     *
+     * @return void
+     */
+    public static function maybe_create_global_file() {
+
+        $global_filename = GH_CA::$code_dir . 'gf-global-code.php';
+        
+        if ( ! file_exists( $global_filename ) ) {
+            
+            $result = copy ( GRAVITYHOPPER_CA_DIR_PATH . '/files/gf-global-code.php', $global_filename );
+
+            $log_type = $result ? 'debug' : 'error';
+
+            GH_CA::log( $log_type, "Make file {$global_filename}: {$result}", __METHOD__ );
+
+        }
+        
+    }
+
+    /**
+     * Create or update mu-plugin code loader if needed
+     *
+     * @return void
+     */
+    public static function maybe_create_mu_loader() {
+
+        $mustuse_filename = WPMU_PLUGIN_DIR . '/gravityhopper-code-abode-loader.php';
+        
+        if ( ! file_exists( $mustuse_filename ) || ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CA_DIR_PATH . '/files/gravityhopper-code-abode-loader.php' ) ) ) {
+            
+            $result = copy( GRAVITYHOPPER_CA_DIR_PATH . '/files/gravityhopper-code-abode-loader.php', $mustuse_filename );
+
+            $log_type = $result ? 'debug' : 'error';
+
+            GH_CA::log( $log_type, "Make file {$mustuse_filename}: {$result}", __METHOD__ );
+
+        }
+        
+    }
 
 	/*---------------------------------------------------------------------------------*
 	* Public Functions
@@ -167,33 +258,6 @@ class GH_CA extends GFAddOn {
             </div>
             <?php
     }
-
-    /**
-     * Create folder after new form is created
-     *
-     * @return void
-     */
-    public static function maybe_create_root_folder() {
-
-		if ( ! file_exists( GH_CA::$code_dir ) ) {
-
-            $result = wp_mkdir_p( GH_CA::$code_dir );
-
-            if ( $result ) {
-                @touch( substr( GH_CA::$code_dir, 0, -5 ) . 'index.html' );
-                @touch( GH_CA::$code_dir . 'index.html' );
-            }
-
-            $log_type = $result ? 'debug' : 'error';
-            
-            GH_CA::log( $log_type, "Make directory {GH_CA::$code_dir}: {$result}", __METHOD__ );
-            
-		}
-
-        GH_CA::maybe_create_global_file();
-        GH_CA::maybe_create_mu_loader();
-        
-    }
     
     /**
      * Create file after new form is created
@@ -203,15 +267,56 @@ class GH_CA extends GFAddOn {
      * @return void
      */
     public static function create_form_file( $form, $is_new ) {
-        
-        GH_CA::maybe_create_root_folder();
 
-        $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $form, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+        if ( apply_filters( 'gravityhopper-ca/create_file', false ) ) {
         
-        $result = @touch( $form_filename );
-        $log_type = $result ? 'debug' : 'error';
+            GH_CA::initialize_root_folder();
 
-        GH_CA::log( $log_type, "Make file {$form_filename}: {$result}", __METHOD__ );
+            $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $form, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+            
+            $result = @touch( $form_filename );
+            if ( $result ) file_put_contents( $form_filename, '<?php
+' );
+
+            $log_type = $result ? 'debug' : 'error';
+
+            GH_CA::log( $log_type, "Make file {$form_filename}: {$result}", __METHOD__ );
+
+        }
+        
+    }
+
+    /**
+     * Duplicate file after existing form is duplicated
+     *
+     * @param int $existing_form_id
+     * @param int $new_form_id
+     * @return void
+     */
+    public static function duplicate_form_file( $existing_form_id, $new_form_id ) {
+
+        if ( apply_filters( 'gravityhopper-ca/duplicate_file', true ) ) {
+        
+            GH_CA::initialize_root_folder();
+
+            $existing_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $existing_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+            
+            if ( file_exists( $existing_form_filename ) ) {
+                
+                $new_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $new_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+
+                $result = copy( $existing_form_filename, $new_form_filename );
+
+                $log_type = $result ? 'debug' : 'error';
+                GH_CA::log( $log_type, "Duplicate file {$existing_form_filename} to {$new_form_filename}: {$result}", __METHOD__ );
+
+            } else {
+
+                GH_CA::create_form_file( GFAPI::get_form( $new_form_id ), true );
+
+            }
+
+        }
         
     }
   
@@ -222,52 +327,15 @@ class GH_CA extends GFAddOn {
      * @return void
      */
     public static function remove_form_file( $form_id ) {
-        
-        $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
-        
-        $result = unlink( $form_filename );
-        $log_type = $result ? 'debug' : 'error';
-        
-        GH_CA::log( $log_type, "Delete file {$form_filename}: {$result}", __METHOD__ );
-        
-    }
-    
-    /**
-     * Create global code file if it doesn't exist
-     *
-     * @return void
-     */
-    public static function maybe_create_global_file() {
 
-        $global_filename = GH_CA::$code_dir . 'gf-global-code.php';
+        if ( apply_filters( 'gravityhopper-ca/remove_file', false ) ) {
         
-        if ( ! file_exists( $global_filename ) ) {
+            $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
             
-            $result = @touch( $global_filename );
+            $result = unlink( $form_filename );
             $log_type = $result ? 'debug' : 'error';
-
-            GH_CA::log( $log_type, "Make file {$global_filename}: {$result}", __METHOD__ );
-
-        }
-        
-    }
-
-    /**
-     * Create or update mu-plugin code loader if needed
-     *
-     * @return void
-     */
-    public static function maybe_create_mu_loader() {
-
-        $mustuse_filename = WPMU_PLUGIN_DIR . '/gravityhopper-code-abode-loader.php';
-        
-        if ( ! file_exists( $mustuse_filename ) || ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CA_DIR_PATH . '/mu-plugin/gravityhopper-code-abode-loader.php' ) ) ) {
             
-            $result = copy( GRAVITYHOPPER_CA_DIR_PATH . '/mu-plugin/gravityhopper-code-abode-loader.php', $mustuse_filename );
-
-            $log_type = $result ? 'debug' : 'error';
-
-            GH_CA::log( $log_type, "Make file {$mustuse_filename}: {$result}", __METHOD__ );
+            GH_CA::log( $log_type, "Delete file {$form_filename}: {$result}", __METHOD__ );
 
         }
         
