@@ -14,3 +14,4 @@
 // add_filter( 'gravityhopper-ca/create_file', '__return_true' );
 // add_filter( 'gravityhopper-ca/duplicate_file', '__return_false' );
 // add_filter( 'gravityhopper-ca/remove_file', '__return_true' );
+

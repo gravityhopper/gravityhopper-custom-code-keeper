@@ -9,7 +9,7 @@ Code Abode…
 1. optionally creates/duplicates/deletes a `gf-00xx.php` file for every form created/duplicated/deleted. *(for housing form-specific code)*
 1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
 1. allows exporting any number of code files to compressed .zip.
-1. introduces a form settings page whereby you can preview relevant custom code.
+1. introduces a form settings page whereby you can preview relevant custom code and create a file if one doesn't yet exist.
 
 **Please note that Code Abode is intended for code organization only and doesn't restrict when code is run.**
 **All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
@@ -19,7 +19,7 @@ Use the following filters to override default behavior file auto-generation/dupl
 
 ```
 add_filter( 'gravityhopper-ca/create_file', '__return_true' );
-add_filter( 'gravityhopper-ca/duplicate_file', '__return_true' );
+add_filter( 'gravityhopper-ca/duplicate_file', '__return_false' );
 add_filter( 'gravityhopper-ca/remove_file', '__return_true' );
 ```
 

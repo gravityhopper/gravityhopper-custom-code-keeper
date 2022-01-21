@@ -63,9 +63,11 @@ class GH_CA extends GFAddOn {
         add_filter( 'gform_form_settings_menu',             [ $this, 'add_form_settings_menu_item' ],       10, 2   );
         add_action( 'gform_form_settings_page_code_abode',  [ $this, 'add_form_settings_subview_page' ]             );
 
-        add_action( 'gform_after_save_form',            [ $this, 'create_form_file' ],                  10, 2   );
-        add_action( 'gform_post_form_duplicated',       [ $this, 'duplicate_form_file' ],               10, 2   );
-        add_action( 'gform_after_delete_form',          [ $this, 'remove_form_file' ]                           );
+        add_action( 'gform_after_save_form',                [ $this, 'maybe_create_form_file' ],            10, 2   );
+        add_action( 'gform_post_form_duplicated',           [ $this, 'duplicate_form_file' ],               10, 2   );
+        add_action( 'gform_forms_post_import',              [ $this, 'do_after_form_import' ],              10, 2   );
+        add_action( 'gform_after_delete_form',              [ $this, 'remove_form_file' ]                           );
+        add_action( 'wp_ajax_create_form_file',             [ $this, 'ajax_create_form_file' ]                      );
 
         add_filter( 'gform_export_menu',                    [ $this, 'add_export_menu_item' ]                       );
         add_action( 'gform_export_page_export_gravityhopper_code_abode', [ $this, 'add_export_page' ]               );
@@ -99,6 +101,29 @@ class GH_CA extends GFAddOn {
     }
 
     /**
+    * Return the scripts which should be enqueued.
+    *
+    * @return array
+    */
+    public function scripts() {
+
+        $scripts = array(
+            array(
+                'handle'  => 'gravityhopper-ca',
+                'src'     => GRAVITYHOPPER_CA_DIR_URL . "gh-ca.js",
+                'version' => $this->_version,
+                'deps'    => array(),
+                'enqueue' => array(
+                    array( 'query' => 'page=gf_edit_forms&view=settings&subview=code_abode' )
+                )
+            )
+        );
+
+        return array_merge( parent::scripts(), $scripts );
+
+    }
+
+    /**
      * Create folder after new form is created
      *
      * @return void
@@ -121,6 +146,7 @@ class GH_CA extends GFAddOn {
 		}
 
         GH_CA::maybe_create_global_file();
+        GH_CA::maybe_create_form_file_template();
         GH_CA::maybe_create_mu_loader();
         
     }
@@ -147,6 +173,27 @@ class GH_CA extends GFAddOn {
     }
 
     /**
+     * Create first form file as example if it doesn't exist
+     *
+     * @return void
+     */
+    public static function maybe_create_form_file_template() {
+
+        $template_filename = GH_CA::$code_dir . 'gform-00xx.php';
+        
+        if ( ! file_exists( $template_filename ) ) {
+            
+            $result = copy( GRAVITYHOPPER_CA_DIR_PATH . '/files/gform-00xx.php', $template_filename );
+
+            $log_type = $result ? 'debug' : 'error';
+
+            GH_CA::log( $log_type, "Make file {$template_filename}: {$result}", __METHOD__ );
+
+        }
+        
+    }
+
+    /**
      * Create or update mu-plugin code loader if needed
      *
      * @return void
@@ -167,9 +214,148 @@ class GH_CA extends GFAddOn {
         
     }
 
+    public function ajax_create_form_file() {
+        
+        // check the nonce
+        if ( wp_verify_nonce( $_POST['data']['nonce'], 'create_form_file' ) == false || ! isset( $_POST['data']['formID'] ) ) {
+            wp_send_json_error();
+        }
+
+        $created = GH_CA::create_form_file( $_POST['data']['formID'] );
+
+        // generate the response
+        if ( $created ) {
+            wp_send_json_success( array(
+                'replace' => GH_CA::get_form_file_preview_markup( $_POST['data']['formID'] )
+            ) );
+        } else {
+            wp_send_json_error( array(
+                'replace' => $created
+            ) );
+        }
+
+    }
+
 	/*---------------------------------------------------------------------------------*
 	* Public Functions
 	*---------------------------------------------------------------------------------*/
+    
+    /**
+     * Maybe create file after new form is created
+     *
+     * @param object $form
+     * @param boolean $is_new
+     * @return void
+     */
+    public static function maybe_create_form_file( $form, $is_new = true ) {
+
+        if ( apply_filters( 'gravityhopper-ca/create_file', false ) ) {
+        
+            GH_CA::create_form_file( rgar( $form, 'id' ) );
+
+        }
+        
+    }
+
+    /**
+     * Create file for specific form
+     *
+     * @param object $form
+     * @param boolean $is_new
+     * @return void
+     */
+    public static function create_form_file( $form_id ) {
+
+        $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
+
+        if ( ! file_exists( $form_filename ) ) {
+        
+            GH_CA::initialize_root_folder();
+            
+            $result = @touch( $form_filename );
+            if ( $result ) file_put_contents( $form_filename, '<?php
+/**
+ * This file is intended for housing code specific to Form ID ' . $form_id . '
+ */
+
+' );
+
+            $log_type = $result ? 'debug' : 'error';
+
+            GH_CA::log( $log_type, "Make file {$form_filename}: {$result}", __METHOD__ );
+
+            return $result;
+
+        } else {
+
+            return false;
+
+        }
+        
+    }
+
+    /**
+     * Duplicate file after existing form is duplicated
+     *
+     * @param int $existing_form_id
+     * @param int $new_form_id
+     * @return void
+     */
+    public static function duplicate_form_file( $existing_form_id, $new_form_id ) {
+
+        if ( apply_filters( 'gravityhopper-ca/duplicate_file', true ) ) {
+        
+            GH_CA::initialize_root_folder();
+
+            $existing_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $existing_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+            
+            if ( file_exists( $existing_form_filename ) ) {
+                
+                $new_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $new_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
+
+                $result = copy( $existing_form_filename, $new_form_filename );
+
+                $log_type = $result ? 'debug' : 'error';
+                GH_CA::log( $log_type, "Duplicate file {$existing_form_filename} to {$new_form_filename}: {$result}", __METHOD__ );
+
+            } else {
+
+                GH_CA::maybe_create_form_file( GFAPI::get_form( $new_form_id ), true );
+
+            }
+
+        }
+        
+    }
+
+    public static function do_after_form_import( $forms ) {
+
+        foreach ( $forms as $form ) {
+            GH_CA::maybe_create_form_file( $form );
+        }
+
+    }
+  
+    /**
+     * Remove code file associated with form
+     *
+     * @param integer $form_id
+     * @return void
+     */
+    public static function remove_form_file( $form_id ) {
+
+        $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
+
+        if ( apply_filters( 'gravityhopper-ca/remove_file', false ) && file_exists( $form_filename ) ) {
+            
+            $result = unlink( $form_filename );
+            $log_type = $result ? 'debug' : 'error';
+            
+            GH_CA::log( $log_type, "Delete file {$form_filename}: {$result}", __METHOD__ );
+
+        }
+        
+    }
 
     /**
      * Add form settings menu item
@@ -182,7 +368,7 @@ class GH_CA extends GFAddOn {
 
         $setting_tabs['32.7'] = array(
             'name'         => 'code_abode',
-            'label'        => __( 'Code Abode', 'gravityhopper-ca' ),
+            'label'        => __( 'Custom Code', 'gravityhopper-ca' ),
             'icon'         => 'dashicons dashicons-editor-code',
             'query'        => array( 'cid' => null, 'nid' => null, 'fid' => null ),
             'capabilities' => array( 'gravityforms_edit_forms' ),
@@ -234,17 +420,14 @@ class GH_CA extends GFAddOn {
             </fieldset>
             <br />
         <?php endif; ?>
-        <?php if ( file_exists( $form_file_name ) && $form_file_contents != '' ) : ?>
-            <fieldset class="gform-settings-panel gform-settings-panel--with-title">
-                <legend class="gform-settings-panel__title gform-settings-panel__title--header">
-                    <?php esc_html_e( 'Form Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $form_file_name; ?></code>
-                </legend>
-                <div class="gform-settings-panel__content" style="max-width: 858px;">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $form_file_contents; ?></code></pre>
-                </div>
-            </fieldset>
-        <?php
-            endif;
+        <?php if ( file_exists( $form_file_name ) ) : ?>
+            <?php echo GH_CA::get_form_file_preview_markup( $form_id ); ?>
+        <?php else :
+            $nonce = wp_create_nonce( 'create_form_file' ); ?>    
+            <div id="gravityhopper_ca-create_file_trigger_container" class="gform-settings-panel__content" style="font-style:italic; padding: 1.4em; font-size: 80%;">
+                <button id="gravityhopper_ca-create_file_trigger" data-form-id="<?= $form_id; ?>" data-nonce="<?= $nonce; ?>" class="primary button large" style="vertical-align:middle;margin-right:1em;">Create File</button><span><em>File for housing code will be created at <code style="font-size: 90%; margin-left: .25em;"><?= $form_file_name; ?></code>.
+            </div>
+        <?php endif;
             if ( ( ! file_exists( $global_file_name ) && ! file_exists( $form_file_name ) ) || ( $global_file_contents == '' && $form_file_contents == '' ) ) :
         ?>
             <div class="gform-settings-panel__content">
@@ -258,87 +441,25 @@ class GH_CA extends GFAddOn {
             </div>
             <?php
     }
-    
-    /**
-     * Create file after new form is created
-     *
-     * @param object $form
-     * @param boolean $is_new
-     * @return void
-     */
-    public static function create_form_file( $form, $is_new ) {
 
-        if ( apply_filters( 'gravityhopper-ca/create_file', false ) ) {
-        
-            GH_CA::initialize_root_folder();
+    public static function get_form_file_preview_markup( $form_id ) {
 
-            $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $form, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
-            
-            $result = @touch( $form_filename );
-            if ( $result ) file_put_contents( $form_filename, '<?php
-' );
+        $form_file_name = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
+        $form_file_contents = file_exists( $form_file_name ) ? esc_html( trim( ltrim( file_get_contents( $form_file_name ), '<?php' ) ) ) : '';
 
-            $log_type = $result ? 'debug' : 'error';
+        ob_start(); ?>
 
-            GH_CA::log( $log_type, "Make file {$form_filename}: {$result}", __METHOD__ );
+        <fieldset class="gform-settings-panel gform-settings-panel--with-title">
+            <legend class="gform-settings-panel__title gform-settings-panel__title--header">
+                <?php esc_html_e( 'Form Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $form_file_name; ?></code>
+            </legend>
+            <div class="gform-settings-panel__content" style="max-width: 858px;">
+                <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $form_file_contents; ?></code></pre>
+            </div>
+        </fieldset>
 
-        }
-        
-    }
+        <?php return ob_get_clean();
 
-    /**
-     * Duplicate file after existing form is duplicated
-     *
-     * @param int $existing_form_id
-     * @param int $new_form_id
-     * @return void
-     */
-    public static function duplicate_form_file( $existing_form_id, $new_form_id ) {
-
-        if ( apply_filters( 'gravityhopper-ca/duplicate_file', true ) ) {
-        
-            GH_CA::initialize_root_folder();
-
-            $existing_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $existing_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
-            
-            if ( file_exists( $existing_form_filename ) ) {
-                
-                $new_form_filename = GH_CA::$code_dir . 'gform-' . str_pad( rgar( $new_form_id, 'id' ), 4, '0', STR_PAD_LEFT ) . '.php';
-
-                $result = copy( $existing_form_filename, $new_form_filename );
-
-                $log_type = $result ? 'debug' : 'error';
-                GH_CA::log( $log_type, "Duplicate file {$existing_form_filename} to {$new_form_filename}: {$result}", __METHOD__ );
-
-            } else {
-
-                GH_CA::create_form_file( GFAPI::get_form( $new_form_id ), true );
-
-            }
-
-        }
-        
-    }
-  
-    /**
-     * Remove code file associated with form
-     *
-     * @param integer $form_id
-     * @return void
-     */
-    public static function remove_form_file( $form_id ) {
-
-        if ( apply_filters( 'gravityhopper-ca/remove_file', false ) ) {
-        
-            $form_filename = GH_CA::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
-            
-            $result = unlink( $form_filename );
-            $log_type = $result ? 'debug' : 'error';
-            
-            GH_CA::log( $log_type, "Delete file {$form_filename}: {$result}", __METHOD__ );
-
-        }
-        
     }
 
     public function add_export_menu_item( $setting_tabs ) {

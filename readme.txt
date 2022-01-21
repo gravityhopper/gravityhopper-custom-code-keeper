@@ -5,7 +5,7 @@ Tags: gravity, forms, code, developer
 Requires PHP: 7.2
 Requires at least: 5.6
 Tested up to: 5.9
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Code Abode…
 1. optionally creates/duplicates/deletes a `gf-00xx.php` file for every form created/duplicated/deleted. *(for housing form-specific code)*
 1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
 1. allows exporting any number of code files to compressed .zip.
-1. introduces a form settings page whereby you can preview relevant custom code.
+1. introduces a form settings page whereby you can preview relevant custom code and create a file if one doesn't yet exist.
 
 **Please note that Code Abode is intended for code organization only and doesn't restrict when code is run.**
 **All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
@@ -31,7 +31,7 @@ Use the following filters to override default behavior file auto-generation/dupl
 
 ```
 add_filter( 'gravityhopper-ca/create_file', '__return_true' );
-add_filter( 'gravityhopper-ca/duplicate_file', '__return_true' );
+add_filter( 'gravityhopper-ca/duplicate_file', '__return_false' );
 add_filter( 'gravityhopper-ca/remove_file', '__return_true' );
 ```
 
@@ -52,6 +52,11 @@ Code Abode provides orderliness to your code customizations, gives you a better 
 After installation and activation on your WordPress site, you will find a new `gravity_hopper/code` directory for housing your Gravity Forms related code within your WordPress site's `upload` folder.
 
 == Changelog ==
+
+= 1.3 // 2022.01-Jan.21 =
+📦 NEW: Adds ability to request file creation from form setting page
+📦 NEW: Adds form file template during initialization
+📦 NEW: Allows file creation during import
 
 = 1.2 // 2022.01-Jan.20 =
 📦 NEW: Allows auto-duplication of files when forms are duplicated
