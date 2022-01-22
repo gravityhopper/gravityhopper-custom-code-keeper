@@ -4,7 +4,7 @@
 
 jQuery(document).ready(function( $ ) {
     
-    $('#gravityhopper_ca-create_file_trigger').on('click',function(e){
+    $('#gravityhopper_cck-create_file_trigger').on('click',function(e){
         
         var nonce = $(this).attr('data-nonce');
         var formID = $(this).attr('data-form-id');
@@ -17,7 +17,7 @@ jQuery(document).ready(function( $ ) {
             }
         } )
         .done( function( response ) {
-            $('#gravityhopper_ca-create_file_trigger_container').replaceWith(response.replace);
+            $('#gravityhopper_cck-create_file_trigger_container').replaceWith(response.replace);
             console.log(response);
         } )
         .fail( function( response ) {

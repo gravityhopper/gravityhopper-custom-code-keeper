@@ -1,15 +1,15 @@
 <?php
 /**
-* Plugin Name: Gravity Hopper: Code Abode
-* Plugin URI: https://github.com/gravityhopper/gravityhopper-code-abode
+* Plugin Name: Gravity Custom Code Keeper
+* Plugin URI: https://wordpress.org/plugins/gravityhopper-custom-code-keeper
 * Description: Provides a reliable and consistent way to store and load custom form-related code on your site.
-* Version: 1.3
+* Version: 2.0
 * Author: Gravity Hopper
 * Author URI: https://gravityhopper.com
-* Text Domain: gravityhopper-ca
+* Text Domain: gravityhopper-cck
 *
 * @package gravityhopper
-* @version 1.3
+* @version 2.0
 * @author uamv
 * @copyright Copyright (c) 2021, uamv
 * @link https://gravityhopper.com
@@ -21,13 +21,13 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-if ( ! function_exists( 'run_gravityhopper_code_abode' ) ) :
+if ( ! function_exists( 'run_gravityhopper_custom_code_keeper' ) ) :
 
-    define( 'GRAVITYHOPPER_CA_VERSION', '1.3' );
-    define( 'GRAVITYHOPPER_CA_DIR_PATH', plugin_dir_path( __FILE__ ) );
-    define( 'GRAVITYHOPPER_CA_DIR_URL', plugin_dir_url( __FILE__ ) );
+    define( 'GRAVITYHOPPER_CCK_VERSION', '2.0' );
+    define( 'GRAVITYHOPPER_CCK_DIR_PATH', plugin_dir_path( __FILE__ ) );
+    define( 'GRAVITYHOPPER_CCK_DIR_URL', plugin_dir_url( __FILE__ ) );
 
-    function run_gravityhopper_code_abode() {
+    function run_gravityhopper_custom_code_keeper() {
 
         add_action( 'gform_loaded', function() {
 
@@ -35,13 +35,13 @@ if ( ! function_exists( 'run_gravityhopper_code_abode' ) ) :
                 return;
             }
 
-            require_once( 'class-gh-ca.php' );
+            require_once( 'class-gh-cck.php' );
 
-            GFAddOn::register( 'GH_CA' );
+            GFAddOn::register( 'GH_CCK' );
             
         }, 5 );
         
     }
-    run_gravityhopper_code_abode();
+    run_gravityhopper_custom_code_keeper();
 
 endif;

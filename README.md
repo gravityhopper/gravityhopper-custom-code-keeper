@@ -1,8 +1,8 @@
-## Gravity Hopper: Code Abode
+## Gravity Custom Code Keeper
 Provides a reliable and consistent way to store and load custom form-related code on your site.
 
 ### How does it work?
-Code Abode…
+Gravity Custom Code Keeper…
 1. creates a directory at `wp-content/uploads/gravity_hopper/code/`.
 1. adds a file loader as an `mu-plugin` on your site.
 1. adds a file `gf-global-code.php` *(for housing globally run code)*.
@@ -11,20 +11,20 @@ Code Abode…
 1. allows exporting any number of code files to compressed .zip.
 1. introduces a form settings page whereby you can preview relevant custom code and create a file if one doesn't yet exist.
 
-**Please note that Code Abode is intended for code organization only and doesn't restrict when code is run.**
+**Please note that Gravity Custom Code Keeper is intended for code organization only and doesn't restrict when code is run.**
 **All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
 **Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.**
 
 Use the following filters to override default behavior file auto-generation/duplication/deletion.
 
 ```
-add_filter( 'gravityhopper-ca/create_file', '__return_true' );
-add_filter( 'gravityhopper-ca/duplicate_file', '__return_false' );
-add_filter( 'gravityhopper-ca/remove_file', '__return_true' );
+add_filter( 'gravityhopper-cck/create_file', '__return_true' );
+add_filter( 'gravityhopper-cck/duplicate_file', '__return_false' );
+add_filter( 'gravityhopper-cck/remove_file', '__return_true' );
 ```
 
 ### Why use it?
-Code Abode provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
+Gravity Custom Code Keeper provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
 
 **Organization:** Our file-per-form framework for organizing your code helps you keep your code in a way that is easier to access, investigate, and update.
 
