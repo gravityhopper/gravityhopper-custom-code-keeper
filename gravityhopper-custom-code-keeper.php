@@ -9,11 +9,11 @@
 * Text Domain: gravityhopper-cck
 *
 * @package gravityhopper
-* @version 2.0
+* @version 2.0.1
 * @author uamv
 * @copyright Copyright (c) 2021, uamv
 * @link https://gravityhopper.com
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.1.html
 */
 
 // If this file is called directly, abort.
@@ -23,7 +23,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 if ( ! function_exists( 'run_gravityhopper_custom_code_keeper' ) ) :
 
-    define( 'GRAVITYHOPPER_CCK_VERSION', '2.0' );
+    define( 'GRAVITYHOPPER_CCK_VERSION', '2.0.1' );
     define( 'GRAVITYHOPPER_CCK_DIR_PATH', plugin_dir_path( __FILE__ ) );
     define( 'GRAVITYHOPPER_CCK_DIR_URL', plugin_dir_url( __FILE__ ) );
 

@@ -112,7 +112,7 @@ class GH_CCK extends GFAddOn {
                 'handle'  => 'gravityhopper-cck',
                 'src'     => GRAVITYHOPPER_CCK_DIR_URL . "gh-cck.js",
                 'version' => $this->_version,
-                'deps'    => array(),
+                'deps'    => array( 'jquery', 'wp-util' ),
                 'enqueue' => array(
                     array( 'query' => 'page=gf_edit_forms&view=settings&subview=gravityhopper_cck' )
                 )

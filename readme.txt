@@ -5,7 +5,7 @@ Tags: gravity, forms, code, developer
 Requires PHP: 7.2
 Requires at least: 5.6
 Tested up to: 5.9
-Stable tag: 2.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,6 +66,9 @@ We realize that sometimes you will need to troubleshoot or stop your code from r
 After installation and activation on your WordPress site, you will find a new `gravity_hopper/code` directory for housing your Gravity Forms related code within your WordPress site's `upload` folder.
 
 == Changelog ==
+
+= 2.0.1 // 2022.01-Jan.31 =
+🐛 FIX: Loads jquery & wp-util dependencies
 
 = 2.0 // 2022.01-Jan.21 =
 🚀 RELEASE: v2.0 renamed in preparation for WP plugin directory
