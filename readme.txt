@@ -44,8 +44,18 @@ Gravity Custom Code Keeper provides orderliness to your code customizations, giv
 **Troubleshoot:** The mu-plugin includes an option to quickly toggle the active state of your custom code. Be sure to deactivate your code when running conflict tests.
 **Portability:** A form is often only as good as the code that stands behind it. Taking your form to another site? Code file exports make it easy to pull the code you need.
 
-= Need more?
-[Gravity Hopper](https://gravityhopper.com) offers an elite array of developer tools that integrates seamlessly with Gravity Forms, saving you time and effort with every form you build.
+= Need more for your Gravity Forms development?
+Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of developer tools that integrates seamlessly with Gravity Forms.
+
+**Field Templates:** Add often-used fields and groups of fields to your hopper. Quickly search and add your field templates to a form.
+**Organized Forms:** Create folders and file forms and entries for easy access right when you need it.
+**Network Hub:** Set up a central dashboard for form development and management.
+**Form Integrity:** Form Integrity runs in the background to track form dependencies and alerts you when something seems to be missing.
+**Field Hinting:** Easily peek at the underlying settings of each field. Need to quickly review all field conditional logic? Get it done with a single click.
+**Field Notes:** Field Notes lets you track your form development and mark up fields with markdown commenting.
+**Keyboard Shortcuts:** An array of keyboard shortcuts for use in navigating your Gravity Forms dashboard.
+**Enhancements:** Introduces improvements to the Gravity Forms interface and featureset.
+**Configurations:** Set basic Gravity Forms options that otherwise need to be configured by code.
 
 == Frequently Asked Questions ==
 
