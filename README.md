@@ -18,9 +18,9 @@ Gravity Custom Code Keeper…
 Use the following filters to override default behavior file auto-generation/duplication/deletion.
 
 ```
-add_filter( 'gravityhopper-cck/create_file', '__return_true' );
-add_filter( 'gravityhopper-cck/duplicate_file', '__return_false' );
-add_filter( 'gravityhopper-cck/remove_file', '__return_true' );
+add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
+add_filter( 'gravityhopper-cck/create_file_after_duplicate_form', '__return_true' );
+add_filter( 'gravityhopper-cck/remove_file_after_delete_form', '__return_true' );
 ```
 
 ### Why use it?
@@ -28,7 +28,7 @@ Gravity Custom Code Keeper provides orderliness to your code customizations, giv
 
 **Organization:** Our file-per-form framework for organizing your code helps you keep your code in a way that is easier to access, investigate, and update.
 
-**Reliability:** Since code is initialized via an mu-plugin loader, your code is not dependant upon a specific theme or plugin being active on the site. The mu-plugin loader is retained when Code Abode is deactivated or removed from the site. Thus, the only dependency for your code is Gravity Forms itself running on the site.
+**Reliability:** Since code is initialized via an mu-plugin loader, your code is not dependant upon a specific theme or plugin being active on the site. The mu-plugin loader is retained when Gravity Custom Code Keeper is deactivated or removed from the site. Thus, the only dependency for your code is Gravity Forms itself running on the site.
 
 **Preservation:** Having your code reside outside of a specific plugin or theme ensures it is not lost to theme updates or plugin deactivation.
 

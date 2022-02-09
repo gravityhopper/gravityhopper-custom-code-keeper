@@ -5,7 +5,7 @@ Tags: gravity, forms, code, developer
 Requires PHP: 7.2
 Requires at least: 5.6
 Tested up to: 5.9
-Stable tag: 2.0.1
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,16 +30,16 @@ Gravity Custom Code Keeper…
 Use the following filters to override default behavior file auto-generation/duplication/deletion.
 
 ```
-add_filter( 'gravityhopper-cck/create_file', '__return_true' );
-add_filter( 'gravityhopper-cck/duplicate_file', '__return_false' );
-add_filter( 'gravityhopper-cck/remove_file', '__return_true' );
+add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
+add_filter( 'gravityhopper-cck/create_file_after_duplicate_form', '__return_true' );
+add_filter( 'gravityhopper-cck/remove_file_after_delete_form', '__return_true' );
 ```
 
 = Why use it?
 Gravity Custom Code Keeper provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
 
 **Organization:** Our file-per-form framework for organizing your code helps you keep your code in a way that is easier to access, investigate, and update.
-**Reliability:** Since code is initialized via an mu-plugin loader, your code is not dependant upon a specific theme or plugin being active on the site. The mu-plugin loader is retained when Code Abode is deactivated or removed from the site. Thus, the only dependency for your code is Gravity Forms itself running on the site.
+**Reliability:** Since code is initialized via an mu-plugin loader, your code is not dependant upon a specific theme or plugin being active on the site. The mu-plugin loader is retained when Gravity Custom Code Keeper is deactivated or removed from the site. Thus, the only dependency for your code is Gravity Forms itself running on the site.
 **Preservation:** Having your code reside outside of a specific plugin or theme ensures it is not lost to theme updates or plugin deactivation.
 **Troubleshoot:** The mu-plugin includes an option to quickly toggle the active state of your custom code. Be sure to deactivate your code when running conflict tests.
 **Portability:** A form is often only as good as the code that stands behind it. Taking your form to another site? Code file exports make it easy to pull the code you need.
@@ -66,6 +66,11 @@ We realize that sometimes you will need to troubleshoot or stop your code from r
 After installation and activation on your WordPress site, you will find a new `gravity_hopper/code` directory for housing your Gravity Forms related code within your WordPress site's `upload` folder.
 
 == Changelog ==
+
+= 2.1 // 2022.02-Feb. =
+📦 NEW: Adds loader location and status indication to system report
+📦 NEW: Moves loader to plugin unless user has manually added loader to mu-plugins folder
+!! BREAKING: Renames filters for clarity as to how they behave
 
 = 2.0.1 // 2022.01-Jan.31 =
 🐛 FIX: Loads jquery & wp-util dependencies
