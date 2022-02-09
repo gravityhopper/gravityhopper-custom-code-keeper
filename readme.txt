@@ -1,7 +1,7 @@
 === Gravity Custom Code Keeper ===
 Contributors: uamv
 Donate link: https://gravityhopper.com
-Tags: gravity, forms, code, developer
+Tags: gravity, forms, code, developer, php, snippets
 Requires PHP: 7.2
 Requires at least: 5.6
 Tested up to: 5.9
@@ -16,7 +16,6 @@ Provides a reliable and consistent way to store and load custom form-related cod
 = How does it work?
 Gravity Custom Code Keeper…
 1. creates a directory at `wp-content/uploads/gravity_hopper/code/`.
-1. adds a file loader as an `mu-plugin` on your site.
 1. adds a file `gf-global-code.php` *(for housing globally run code)*.
 1. optionally creates/duplicates/deletes a `gf-00xx.php` file for every form created/duplicated/deleted. *(for housing form-specific code)*
 1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
@@ -63,13 +62,9 @@ Saving you time and effort with every form you build, **[Gravity Hopper](https:/
 
 No. This plugin is intended for code wrangling only and does not restrict when code is run. All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
 
-= Will my custom code continue to run if the plugin is deactivated or removed? =
+= Can I edit the custom code from within my WordPress dashboard? =
 
-Yes. Upon activation, the plugin sets up a directory to house your code at `gravity_hopper/code` in your `uploads` folder and also installs an mu-plugin which remains in place even should the Gravity Custom Code Keeper plugin be deactivated or removed.
-
-= How can I stop my custom code from loading? =
-
-We realize that sometimes you will need to troubleshoot or stop your code from running. You can either remove the files from the `gravity_hopper/code` directory or use a button from the Must-Use plugin listing to *Stop Code* and *Start Code*.
+No. While each form provides a Custom Code previewer, the actual codes needs to be edited directly from within the files housed on your server.
 
 == Installation ==
 

@@ -4,7 +4,6 @@ Provides a reliable and consistent way to store and load custom form-related cod
 ### How does it work?
 Gravity Custom Code Keeper…
 1. creates a directory at `wp-content/uploads/gravity_hopper/code/`.
-1. adds a file loader as an `mu-plugin` on your site.
 1. adds a file `gf-global-code.php` *(for housing globally run code)*.
 1. optionally creates/duplicates/deletes a `gf-00xx.php` file for every form created/duplicated/deleted. *(for housing form-specific code)*
 1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
