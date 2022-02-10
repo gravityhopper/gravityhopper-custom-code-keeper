@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin Name: Gravity Custom Code Keeper
-* Plugin URI: https://wordpress.org/plugins/gravityhopper-custom-code-keeper
+* Plugin URI: https://wordpress.org/plugins/gravity-custom-code-keeper
 * Description: Provides a reliable and consistent way to store and load custom form-related code on your site.
 * Version: 2.1
 * Author: Gravity Hopper
