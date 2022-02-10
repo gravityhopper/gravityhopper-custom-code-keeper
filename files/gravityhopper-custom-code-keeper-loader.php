@@ -8,9 +8,54 @@
 	Version: 2.0
  */
 
+add_filter( 'gform_system_report', function( $system_report ) {
+
+    $table = array(
+        'title'        => esc_html__( 'Custom Code Keeper', 'gravityhopper-cck' ),
+        'title_export' => 'Custom Code Keeper',
+        'items'        => array(
+            array(
+                'label'        => esc_html__( 'Loader Location', 'gravityhopper-cck' ),
+                'label_export' => 'Loader Location',
+                'value'        => __DIR__,
+            ),
+            array(
+                'label'        => esc_html__( 'Code Loading', 'gravityhopper-cck' ),
+                'label_export' => 'Code Loading',
+                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  __( 'Code is Active', 'gravityforms' ) : __( 'Disabled', 'gravityforms' ),
+            )
+        )
+    );
+
+    if ( is_plugin_active( 'gravityhopper/gravityhopper.php' ) ) {
+
+        foreach ( $system_report as &$section ) {
+            
+            if ( $section['title'] == 'Gravity Hopper Environment' ) {
+                $section['tables'][] = $table;
+            }
+    
+        }
+
+    } else {
+
+        $system_report[] = array(
+            'title'        => esc_html__( 'Gravity Hopper Environment', 'gravityforms' ),
+            'title_export' => 'Gravity Hopper Environment',
+            'tables'       => array(
+                $table
+            )
+        );
+
+    }
+
+    return $system_report;
+
+}, 11 );
+
 add_action( 'gform_loaded', function() {
 
-    $code_loading = get_option( 'gravityhopper_cck_loading', true );
+    $code_loading = get_option( 'gravityhopper_cck_loading', true ) || ! file_exists( WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php' );
 
     if ( class_exists( 'GFForms' ) && version_compare( GFForms::$version, '2.5', '>' ) && $code_loading ) {
       
@@ -18,8 +63,6 @@ add_action( 'gform_loaded', function() {
         $code_dir = $dir['basedir'] . '/gravity_hopper/';
 
         if ( file_exists( $code_dir . 'code' ) ) {
-
-            GFCommon::log_debug( __FILE__ . ": Including files located at {$code_dir}code/" );
             
             if ( file_exists( $code_dir . 'code/gf-global-code.php' ) ) {
                 include_once $code_dir . 'code/gf-global-code.php';
@@ -35,13 +78,9 @@ add_action( 'gform_loaded', function() {
             
         }
 
-    } elseif ( class_exists( 'GFForms' ) && version_compare( GFForms::$version, '2.5', '>' ) ) {
-
-        GFCommon::log_debug( __FILE__ . ": Gravity Custom Code Keeper Loader is disabled." );
-
     }
 
-} );
+}, 1 );
 
 add_filter( 'plugin_action_links', function( $actions, $plugin_file, $plugin_data, $context ) {
 

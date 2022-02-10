@@ -5,7 +5,7 @@ GFForms::include_addon_framework();
 /**
 * GH_CCK Class
 *
-* @package gravityhopper-code-abode
+* @package gravityhopper-custom-code-keeper
 * @author  uamv
 */
 class GH_CCK extends GFAddOn {
@@ -147,7 +147,7 @@ class GH_CCK extends GFAddOn {
 
         GH_CCK::maybe_create_global_file();
         GH_CCK::maybe_create_form_file_template();
-        GH_CCK::maybe_create_mu_loader();
+        GH_CCK::maybe_update_mu_loader();
         
     }
 
@@ -198,17 +198,17 @@ class GH_CCK extends GFAddOn {
      *
      * @return void
      */
-    public static function maybe_create_mu_loader() {
+    public static function maybe_update_mu_loader() {
 
         $mustuse_filename = WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php';
         
-        if ( ! file_exists( $mustuse_filename ) || ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gravityhopper-custom-code-keeper-loader.php' ) ) ) {
+        if ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gravityhopper-custom-code-keeper-loader.php' ) ) {
             
             $result = copy( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gravityhopper-custom-code-keeper-loader.php', $mustuse_filename );
 
             $log_type = $result ? 'debug' : 'error';
 
-            GH_CCK::log( $log_type, "Make file {$mustuse_filename}: {$result}", __METHOD__ );
+            GH_CCK::log( $log_type, "Updated file {$mustuse_filename}: {$result}", __METHOD__ );
 
         }
         
@@ -249,7 +249,7 @@ class GH_CCK extends GFAddOn {
      */
     public static function maybe_create_form_file( $form, $is_new = true ) {
 
-        if ( apply_filters( 'gravityhopper-cck/create_file', false ) ) {
+        if ( apply_filters( 'gravityhopper-cck/create_file_after_new_form', false ) ) {
         
             GH_CCK::create_form_file( rgar( $form, 'id' ) );
 
@@ -309,7 +309,7 @@ class GH_CCK extends GFAddOn {
      */
     public static function duplicate_form_file( $existing_form_id, $new_form_id ) {
 
-        if ( apply_filters( 'gravityhopper-cck/duplicate_file', true ) ) {
+        if ( apply_filters( 'gravityhopper-cck/create_file_after_duplicate_form', true ) ) {
         
             GH_CCK::initialize_root_folder();
 
@@ -352,7 +352,7 @@ class GH_CCK extends GFAddOn {
 
         $form_filename = GH_CCK::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
 
-        if ( apply_filters( 'gravityhopper-cck/remove_file', false ) && file_exists( $form_filename ) ) {
+        if ( apply_filters( 'gravityhopper-cck/remove_file_after_delete_form', false ) && file_exists( $form_filename ) ) {
             
             $result = unlink( $form_filename );
             $log_type = $result ? 'debug' : 'error';
