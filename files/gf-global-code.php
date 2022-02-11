@@ -11,6 +11,6 @@
  * For more information on Gravity Custom Code Keeper visit gravityhopper.com
  */
 
-// add_filter( 'gravityhopper-ca/create_file_after_new_form', '__return_true' );
-// add_filter( 'gravityhopper-ca/create_file_after_duplicate_form', '__return_true' );
-// add_filter( 'gravityhopper-ca/remove_file_after_delete_form', '__return_true' );
+// add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
+// add_filter( 'gravityhopper-cck/create_file_after_duplicate_form', '__return_true' );
+// add_filter( 'gravityhopper-cck/remove_file_after_delete_form', '__return_true' );

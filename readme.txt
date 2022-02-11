@@ -26,7 +26,7 @@ Gravity Custom Code Keeper…
 **All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
 **Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.**
 
-Use the following filters to override default behavior file auto-generation/duplication/deletion.
+Use the following filters for file auto-generation/duplication/deletion.
 
 ```
 add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
@@ -72,7 +72,10 @@ After installation and activation on your WordPress site, you will find a new `g
 
 == Changelog ==
 
-= 2.1 // 2022.02-Feb. =
+= 2.1.1 // 2022.02-Feb.11 =
+👌 IMPROVE: Adds sanitization and escaping
+
+= 2.1 // 2022.02-Feb.09 =
 📦 NEW: Adds loader location and status indication to system report
 📦 NEW: Moves loader to plugin unless user has manually added loader to mu-plugins folder
 !! BREAKING: Renames filters for clarity as to how they behave
