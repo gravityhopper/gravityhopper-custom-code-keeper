@@ -1,12 +1,59 @@
 <?php
 /*
 	Plugin Name: Gravity Custom Code Keeper Loader
-    Plugin URI: https://wordpress.org/plugins/gravityhopper-custom-code-keeper
+    Plugin URI: https://wordpress.org/plugins/gravity-custom-code-keeper
 	Description: Loads Gravity Forms related code from <code>gf-*.php</code> and <code>gform-*.php</code> files residing in <code>uploads/gravity_hopper/code/</code>
     Author: Gravity Hopper
     Author URI: https://gravityhopper.com
-	Version: 2.0
- */
+	Version: 2.1.1
+*/
+
+add_filter( 'gform_system_report', function( $system_report ) {
+
+    $table = array(
+        'title'        => esc_html__( 'Custom Code Keeper', 'gravityhopper-cck' ),
+        'title_export' => 'Custom Code Keeper',
+        'items'        => array(
+            array(
+                'label'        => esc_html__( 'Loader Location', 'gravityhopper-cck' ),
+                'label_export' => 'Loader Location',
+                'value'        => __DIR__,
+            ),
+            array(
+                'label'        => esc_html__( 'Code Loading', 'gravityhopper-cck' ),
+                'label_export' => 'Code Loading',
+                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  esc_html__( 'Code is Active', 'gravityforms' ) : esc_html__( 'Disabled', 'gravityforms' ),
+            )
+        )
+    );
+
+    if ( is_plugin_active( 'gravityhopper/gravityhopper.php' ) ) {
+
+        foreach ( $system_report as &$section ) {
+            
+            if ( $section['title'] == 'Gravity Hopper Environment' ) {
+
+                $section['tables'][] = $table;
+
+            }
+    
+        }
+
+    } else {
+
+        $system_report[] = array(
+            'title'        => esc_html__( 'Gravity Hopper Environment', 'gravityforms' ),
+            'title_export' => 'Gravity Hopper Environment',
+            'tables'       => array(
+                $table
+            )
+        );
+
+    }
+
+    return $system_report;
+
+}, 11 );
 
 add_filter( 'gform_system_report', function( $system_report ) {
 
@@ -67,12 +114,12 @@ add_action( 'gform_loaded', function() {
             if ( file_exists( $code_dir . 'code/gf-global-code.php' ) ) {
                 include_once $code_dir . 'code/gf-global-code.php';
             }
-    
-            foreach ( glob( $code_dir . "code/gform-*.php" ) as $filename ) {
+            
+            foreach ( glob( $code_dir . "code/gf-*.php" ) as $filename ) {
                 include_once $filename;
             }
-    
-            foreach ( glob( $code_dir . "code/gf-*.php" ) as $filename ) {
+
+            foreach ( glob( $code_dir . "code/gform-*.php" ) as $filename ) {
                 include_once $filename;
             }
             
@@ -115,7 +162,7 @@ add_action( 'admin_init', function() {
 
         check_admin_referer( 'gh_toggle_code_load', 'gh_toggle_code_load_nonce' );
 
-        update_option( 'gravityhopper_cck_loading', $_POST['gravityhopper_cck_load'] );
+        update_option( 'gravityhopper_cck_loading', sanitize_text( $_POST['gravityhopper_cck_load'] ) );
 
     }
 

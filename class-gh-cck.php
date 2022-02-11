@@ -3,11 +3,11 @@
 GFForms::include_addon_framework();
 
 /**
-* GH_CCK Class
-*
-* @package gravityhopper-custom-code-keeper
-* @author  uamv
-*/
+ * GH_CCK Class
+ *
+ * @package gravityhopper-custom-code-keeper
+ * @author  uamv
+ */
 class GH_CCK extends GFAddOn {
 
 	/*---------------------------------------------------------------------------------*
@@ -31,10 +31,10 @@ class GH_CCK extends GFAddOn {
 	*---------------------------------------------------------------------------------*/
 
 	/**
-	* Get an instance of this class.
-	*
-	* @return GH_CCK
-	*/
+	 * Get an instance of this class.
+	 *
+	 * @return GH_CCK
+	 */
 	public static function get_instance() {
 
 		if ( self::$_instance == null ) {
@@ -61,25 +61,30 @@ class GH_CCK extends GFAddOn {
         self::$code_dir = GH_CCK::get_upload_root();
 
         add_filter( 'gform_form_settings_menu',                     [ $this, 'add_form_settings_menu_item' ],       10, 2   );
-        add_action( 'gform_form_settings_page_gravityhopper_cck',   [ $this, 'add_form_settings_subview_page' ]       );
+        add_action( 'gform_form_settings_page_gravityhopper_cck',   [ $this, 'add_form_settings_subview_page' ]             );
 
         add_action( 'gform_after_save_form',                        [ $this, 'maybe_create_form_file' ],            10, 2   );
         add_action( 'gform_post_form_duplicated',                   [ $this, 'duplicate_form_file' ],               10, 2   );
-        add_action( 'gform_forms_post_import',                      [ $this, 'do_after_form_import' ],              10, 2   );
+        add_action( 'gform_forms_post_import',                      [ $this, 'maybe_create_form_files' ],           10, 2   );
         add_action( 'gform_after_delete_form',                      [ $this, 'remove_form_file' ]                           );
         add_action( 'wp_ajax_create_form_file',                     [ $this, 'ajax_create_form_file' ]                      );
 
         add_filter( 'gform_export_menu',                            [ $this, 'add_export_menu_item' ]                       );
-        add_action( 'gform_export_page_export_gravityhopper_cck',   [ $this, 'add_export_page' ]                      );
+        add_action( 'gform_export_page_export_gravityhopper_cck',   [ $this, 'add_export_page' ]                            );
         
         $this->maybe_export();
 
-	} // end constructor
+	}
 
 	/*---------------------------------------------------------------------------------*
 	* Administrative Functions
 	*---------------------------------------------------------------------------------*/
 
+    /**
+     * Compare any installed version with current and maybe run upgrade processes
+     *
+     * @return void
+     */
     public function maybe_upgrade() {
 
         $old_version = get_option( 'gravityhopper_cck_version', 0 );
@@ -90,10 +95,17 @@ class GH_CCK extends GFAddOn {
 
         }
 
-        update_option( 'gravityhopper_cck_version', GRAVITYHOPPER_CCK_VERSION, false);
+        update_option( 'gravityhopper_cck_version', GRAVITYHOPPER_CCK_VERSION, false );
 
     }
 
+    /**
+     * Process any upgrade tasks
+     *
+     * @param string $old_version
+     * @param string $current_version
+     * @return void
+     */
     public function do_upgrade( $old_version, $current_version ) {
 
         GH_CCK::initialize_root_folder();
@@ -124,7 +136,7 @@ class GH_CCK extends GFAddOn {
     }
 
     /**
-     * Create folder after new form is created
+     * Initialize directory in uploads folder for housing code and create initial files
      *
      * @return void
      */
@@ -132,15 +144,16 @@ class GH_CCK extends GFAddOn {
 
 		if ( ! file_exists( GH_CCK::$code_dir ) ) {
 
+            // make the directory at uploads/gravity_hopper/code/
             $result = wp_mkdir_p( GH_CCK::$code_dir );
 
+            // if directory created successfully, then add index.html files to both directory levels
             if ( $result ) {
                 @touch( substr( GH_CCK::$code_dir, 0, -5 ) . 'index.html' );
                 @touch( GH_CCK::$code_dir . 'index.html' );
             }
 
-            $log_type = $result ? 'debug' : 'error';
-            
+            $log_type = $result ? 'debug' : 'error';            
             GH_CCK::log( $log_type, "Make directory {GH_CCK::$code_dir}: {$result}", __METHOD__ );
             
 		}
@@ -162,10 +175,9 @@ class GH_CCK extends GFAddOn {
         
         if ( ! file_exists( $global_filename ) ) {
             
-            $result = copy ( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gf-global-code.php', $global_filename );
+            $result = copy( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gf-global-code.php', $global_filename );
 
             $log_type = $result ? 'debug' : 'error';
-
             GH_CCK::log( $log_type, "Make file {$global_filename}: {$result}", __METHOD__ );
 
         }
@@ -186,7 +198,6 @@ class GH_CCK extends GFAddOn {
             $result = copy( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gform-00xx.php', $template_filename );
 
             $log_type = $result ? 'debug' : 'error';
-
             GH_CCK::log( $log_type, "Make file {$template_filename}: {$result}", __METHOD__ );
 
         }
@@ -194,7 +205,7 @@ class GH_CCK extends GFAddOn {
     }
 
     /**
-     * Create or update mu-plugin code loader if needed
+     * Create or update mu-plugin code loader if it exists and differs from packaged version
      *
      * @return void
      */
@@ -202,31 +213,38 @@ class GH_CCK extends GFAddOn {
 
         $mustuse_filename = WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php';
         
+        // check if user has added loader file as mu-plugin and whether packaged version of file differs from what they are running
         if ( file_exists( $mustuse_filename ) && sha1_file( $mustuse_filename ) != sha1_file( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gravityhopper-custom-code-keeper-loader.php' ) ) {
             
             $result = copy( GRAVITYHOPPER_CCK_DIR_PATH . '/files/gravityhopper-custom-code-keeper-loader.php', $mustuse_filename );
 
             $log_type = $result ? 'debug' : 'error';
-
             GH_CCK::log( $log_type, "Updated file {$mustuse_filename}: {$result}", __METHOD__ );
 
         }
         
     }
 
+    /**
+     * Create file in uploads/gravity_hopper/code/ at behest of user
+     *
+     * @return void
+     */
     public function ajax_create_form_file() {
         
-        // check the nonce
-        if ( wp_verify_nonce( $_POST['data']['nonce'], 'create_form_file' ) == false || ! isset( $_POST['data']['formID'] ) ) {
+        // check the nonce and that form ID has been provided
+        if ( wp_verify_nonce( sanitize_text_field( $_POST['data']['nonce'] ), 'create_form_file' ) == false || ! isset( $_POST['data']['formID'] ) ) {
             wp_send_json_error();
         }
 
-        $created = GH_CCK::create_form_file( $_POST['data']['formID'] );
+        $form_id = sanitize_text_field( $_POST['data']['formID'] );
+
+        $created = GH_CCK::create_form_file( $form_id );
 
         // generate the response
         if ( $created ) {
             wp_send_json_success( array(
-                'replace' => GH_CCK::get_form_file_preview_markup( $_POST['data']['formID'] )
+                'replace' => GH_CCK::get_form_file_preview_markup( $form_id )
             ) );
         } else {
             wp_send_json_error( array(
@@ -235,10 +253,6 @@ class GH_CCK extends GFAddOn {
         }
 
     }
-
-	/*---------------------------------------------------------------------------------*
-	* Public Functions
-	*---------------------------------------------------------------------------------*/
     
     /**
      * Maybe create file after new form is created
@@ -260,9 +274,8 @@ class GH_CCK extends GFAddOn {
     /**
      * Create file for specific form
      *
-     * @param object $form
-     * @param boolean $is_new
-     * @return void
+     * @param integer $form_id
+     * @return mixed
      */
     public static function create_form_file( $form_id ) {
 
@@ -274,7 +287,11 @@ class GH_CCK extends GFAddOn {
             GH_CCK::initialize_root_folder();
             
             $result = @touch( $form_filename );
-            if ( $result ) file_put_contents( $form_filename, '<?php
+
+            if ( $result ) {
+
+                file_put_contents( $form_filename,
+'<?php
 /**
  * Form ID '.$form_id.' ~~'.rgar( $form, 'title' ).'~~
  * 
@@ -284,10 +301,12 @@ class GH_CCK extends GFAddOn {
  * Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
  */
 
-' );
+'
+                );
+
+            }
 
             $log_type = $result ? 'debug' : 'error';
-
             GH_CCK::log( $log_type, "Make file {$form_filename}: {$result}", __METHOD__ );
 
             return $result;
@@ -334,10 +353,18 @@ class GH_CCK extends GFAddOn {
         
     }
 
-    public static function do_after_form_import( $forms ) {
+    /**
+     * Maybe create files for an array of forms
+     *
+     * @param array $forms
+     * @return void
+     */
+    public static function maybe_create_form_files( $forms ) {
 
         foreach ( $forms as $form ) {
+
             GH_CCK::maybe_create_form_file( $form );
+            
         }
 
     }
@@ -355,8 +382,8 @@ class GH_CCK extends GFAddOn {
         if ( apply_filters( 'gravityhopper-cck/remove_file_after_delete_form', false ) && file_exists( $form_filename ) ) {
             
             $result = unlink( $form_filename );
+
             $log_type = $result ? 'debug' : 'error';
-            
             GH_CCK::log( $log_type, "Delete file {$form_filename}: {$result}", __METHOD__ );
 
         }
@@ -374,7 +401,7 @@ class GH_CCK extends GFAddOn {
 
         $setting_tabs['32.7'] = array(
             'name'         => 'gravityhopper_cck',
-            'label'        => __( 'Custom Code', 'gravityhopper-cck' ),
+            'label'        => esc_html__( 'Custom Code', 'gravityhopper-cck' ),
             'icon'         => 'dashicons dashicons-editor-code',
             'query'        => array( 'cid' => null, 'nid' => null, 'fid' => null ),
             'capabilities' => array( 'gravityforms_edit_forms' ),
@@ -394,34 +421,33 @@ class GH_CCK extends GFAddOn {
 
         GFFormSettings::page_header();
 
-        $form_id = rgget('id');
+        $form_id = sanitize_text_field( rgget( 'id' ) );
 
         $global_file_name = GH_CCK::$code_dir . 'gf-global-code.php';
         $form_file_name = GH_CCK::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
 
-        $global_file_contents = file_exists( $global_file_name ) ? esc_html( trim( ltrim( file_get_contents( $global_file_name ), '<?php' ) ) ) : '';
-        $form_file_contents = file_exists( $form_file_name ) ? esc_html( trim( ltrim( file_get_contents( $form_file_name ), '<?php' ) ) ) : '';
+        $global_file_contents = file_exists( $global_file_name ) ? trim( ltrim( file_get_contents( $global_file_name ), '<?php' ) ) : '';
+        $form_file_contents = file_exists( $form_file_name ) ? trim( ltrim( file_get_contents( $form_file_name ), '<?php' ) ) : '';
 
-        if ( file_exists( $global_file_name ) && $global_file_contents != '' ) :
-            ?>
+        if ( file_exists( $global_file_name ) && $global_file_contents != '' ) : ?>
 
             <fieldset id="gravityhopper_cck_global" class="gform-settings-panel gform-settings-panel--with-title gform-settings-panel--collapsible gform-settings-panel--collapsed">
                 <legend class="gform-settings-panel__title gform-settings-panel__title--header">
-                    <?php esc_html_e( 'Global Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $global_file_name; ?></code>
+                    <?php esc_html_e( 'Global Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?php esc_html_e( $global_file_name ); ?></code>
                 </legend>
                 <span class="gform-settings-panel__collapsible-control">
-                        <input
-                                type="checkbox"
-                                id="gform_settings_section_collapsed_gravityhopper_cck_global"
-                                name="gform_settings_section_collapsed_gravityhopper_cck_global"
-                                value="1"
-                                onclick="this.checked ? this.closest( '.gform-settings-panel' ).classList.add( 'gform-settings-panel--collapsed' ) : this.closest( '.gform-settings-panel' ).classList.remove( 'gform-settings-panel--collapsed' )"
-                                checked="yes"
-                        />
-                        <label class="gform-settings-panel__collapsible-toggle" for="gform_settings_section_collapsed_uninstall"><span class="screen-reader-text"><?php printf( esc_html__( 'Toggle %s Section', 'gravityforms' ), 'Global Code' ); ?></span></label>
-                    </span>
+                    <input
+                            type="checkbox"
+                            id="gform_settings_section_collapsed_gravityhopper_cck_global"
+                            name="gform_settings_section_collapsed_gravityhopper_cck_global"
+                            value="1"
+                            onclick="this.checked ? this.closest( '.gform-settings-panel' ).classList.add( 'gform-settings-panel--collapsed' ) : this.closest( '.gform-settings-panel' ).classList.remove( 'gform-settings-panel--collapsed' )"
+                            checked="yes"
+                    />
+                    <label class="gform-settings-panel__collapsible-toggle" for="gform_settings_section_collapsed_uninstall"><span class="screen-reader-text"><?php printf( esc_html__( 'Toggle %s Section', 'gravityforms' ), 'Global Code' ); ?></span></label>
+                </span>
                 <div class="gform-settings-panel__content" style="max-width: 858px;">
-                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $global_file_contents; ?></code></pre>
+                    <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?php esc_html_e( $global_file_contents ); ?></code></pre>
                 </div>
             </fieldset>
             <br />
@@ -431,36 +457,43 @@ class GH_CCK extends GFAddOn {
         <?php else :
             $nonce = wp_create_nonce( 'create_form_file' ); ?>    
             <div id="gravityhopper_cck-create_file_trigger_container" class="gform-settings-panel__content" style="font-style:italic; padding: 1.4em; font-size: 80%;">
-                <button id="gravityhopper_cck-create_file_trigger" data-form-id="<?= $form_id; ?>" data-nonce="<?= $nonce; ?>" class="primary button large" style="vertical-align:middle;margin-right:1em;">Create File</button><span><em>File for housing code will be created at <code style="font-size: 90%; margin-left: .25em;"><?= $form_file_name; ?></code>.
+                <button id="gravityhopper_cck-create_file_trigger" data-form-id="<?php esc_attr_e( $form_id ); ?>" data-nonce="<?php esc_attr_e( $nonce ); ?>" class="primary button large" style="vertical-align:middle;margin-right:1em;">Create File</button><span><em>File for housing code will be created at <code style="font-size: 90%; margin-left: .25em;"><?php esc_html_e( $form_file_name ); ?></code>.
             </div>
         <?php endif;
             if ( ( ! file_exists( $global_file_name ) && ! file_exists( $form_file_name ) ) || ( $global_file_contents == '' && $form_file_contents == '' ) ) :
         ?>
             <div class="gform-settings-panel__content">
-                No custom code for this form resides in the directory at <code style="font-size: 90%; margin-left: .25em;"><?= GH_CCK::$code_dir; ?></code>
+                No custom code for this form resides in the directory at <code style="font-size: 90%; margin-left: .25em;"><?php esc_html_e( GH_CCK::$code_dir ); ?></code>
             </div>
             <?php endif; ?>
             <div class="gform-settings-panel__content" style="font-style:italic; padding: 1.4em; font-size: 80%;">
                 <strong>Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.</strong><br>
                 Gravity Custom Code Keeper is intended for code organization only and doesn't restrict when code is run.<br>
-                All code residing in <code style="font-size: 90%; margin-left: .25em;"><?= GH_CCK::$code_dir; ?></code> will run for all forms.
+                All code residing in <code style="font-size: 90%; margin-left: .25em;"><?php esc_html_e( GH_CCK::$code_dir ); ?></code> will run for all forms.
             </div>
-            <?php
+        <?php
+
     }
 
+    /**
+     * Return markup for previewing contents of the file
+     *
+     * @param int $form_id
+     * @return void
+     */
     public static function get_form_file_preview_markup( $form_id ) {
 
         $form_file_name = GH_CCK::$code_dir . 'gform-' . str_pad( $form_id, 4, '0', STR_PAD_LEFT ) . '.php';
-        $form_file_contents = file_exists( $form_file_name ) ? esc_html( trim( ltrim( file_get_contents( $form_file_name ), '<?php' ) ) ) : '';
+        $form_file_contents = file_exists( $form_file_name ) ? trim( ltrim( file_get_contents( $form_file_name ), '<?php' ) ) : '';
 
         ob_start(); ?>
 
         <fieldset class="gform-settings-panel gform-settings-panel--with-title">
             <legend class="gform-settings-panel__title gform-settings-panel__title--header">
-                <?php esc_html_e( 'Form Code', 'gravityforms' ); ?><code style="font-size: 70%; margin-left: 2em;"><?= $form_file_name; ?></code>
+                <?php esc_html_e( 'Form Code', 'gravityforms-cck' ); ?><code style="font-size: 70%; margin-left: 2em;"><?php esc_html_e( $form_file_name ); ?></code>
             </legend>
             <div class="gform-settings-panel__content" style="max-width: 858px;">
-                <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?= $form_file_contents; ?></code></pre>
+                <pre style="background-color: #ecedf8; padding: 1.5em; margin: 0; overflow-x: auto;"><code style="background: transparent; padding: 0; margin: 0; font-size: .72rem;"><?php esc_html_e( $form_file_contents ); ?></code></pre>
             </div>
         </fieldset>
 
@@ -468,20 +501,33 @@ class GH_CCK extends GFAddOn {
 
     }
 
+    /**
+     * Adds menu item to Gravity Forms Import/Export screen
+     *
+     * @param array $setting_tabs
+     * @return void
+     */
     public function add_export_menu_item( $setting_tabs ) {
 
         if ( GFCommon::current_user_can_any( 'gravityforms_edit_forms' ) ) {
+
             $setting_tabs['37.3'] = array(
                 'name'  => 'export_gravityhopper_cck',
-                'label' => __( 'Export Code', 'gravityhopper-cck' ),
+                'label' => esc_html__( 'Export Code', 'gravityhopper-cck' ),
                 'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="24" height="24" preserveAspectRatio="xMidYMid meet" viewBox="0 0 20 20"><path d="M9 6l-4 4l4 4l-1 2l-6-6l6-6zm2 8l4-4l-4-4l1-2l6 6l-6 6z" fill="currentColor"/></svg>',
             );
+
         }
 
         return $setting_tabs;
 
     }
 
+    /**
+     * Render contents of export code files page
+     *
+     * @return void
+     */
     public function add_export_page() {
 
         if ( ! GFCommon::current_user_can_any( 'gravityforms_edit_forms' ) ) {
@@ -538,11 +584,14 @@ class GH_CCK extends GFAddOn {
 					                    $files = GH_CCK::get_files();
                                         $forms = RGFormsModel::get_forms( null, 'title' );
                                         
+                                        // set an array of file form data for displaying checkox options
                                         $files = array_map( function( $file ) use ( $forms ) {
 
+                                            // strip filename to retrieve file identifier
                                             $filename = str_replace( GH_CCK::$code_dir, '', $file );
                                             $fileabbr = ltrim( str_replace( [ 'gform-', '.php' ], '', $filename ), '0' );
                                             
+                                            // loop through available forms and if file identifier is numeric, set form
                                             if ( is_numeric( $fileabbr ) ) {
                                                 $form = array_values( array_filter( $forms, function( $form ) use ( $fileabbr ) {
                                                     return $fileabbr == $form->id;
@@ -551,6 +600,7 @@ class GH_CCK extends GFAddOn {
                                                 $form = false;
                                             }
 
+                                            // return structured data that we can loop through
                                             return [
                                                 'name' => $filename,
                                                 'abbr' => $fileabbr,
@@ -560,13 +610,16 @@ class GH_CCK extends GFAddOn {
 
                                         }, $files );
 
+                                        // render file export inputs
 					                    foreach ( $files as $file ) {
 						                    ?>
                                             <li>
-                                                <input type="checkbox" name="gh_code_file_name[]" id="gh_code_file_name_<?php echo $file['abbr'] ?>" value="<?php echo $file['name'] ?>" />
-                                                <label for="gh_code_file_name_<?php echo $file['abbr'] ?>"><code><?php echo esc_html( $file['name'] ) ?></code>
+                                                <input type="checkbox" name="gh_code_file_name[]" id="gh_code_file_name_<?php esc_attr_e( $file['abbr'] ) ?>" value="<?php esc_attr_e( $file['name'] ) ?>" />
+                                                <label for="gh_code_file_name_<?php esc_attr_e( $file['abbr'] ) ?>"><code><?php esc_html_e( $file['name'] ) ?></code>
                                                 <?php
-                                                    echo ( $file['formTitle'] != '' ) ? " - {$file['formTitle']}" : '';
+                                                    if ( $file['formTitle'] != '' ) {
+                                                        esc_html_e( " - {$file['formTitle']}" );
+                                                    }
                                                 ?>
                                                 </label>
                                             </li>
@@ -577,7 +630,6 @@ class GH_CCK extends GFAddOn {
                                 </td>
                             </tr>
                         </table>
-
                         <br /><br />
                         <input type="submit" value="<?php esc_attr_e( 'Download Export File', 'gravityhopper-cck' ) ?>" name="export_gravityhopper_cck_files" class="button large primary" />
                     </div>
@@ -590,6 +642,11 @@ class GH_CCK extends GFAddOn {
 
     }
 
+    /**
+     * Retrieve array of all filenames contained in uploads/gravity_hopper/code/
+     *
+     * @return void
+     */
     public static function get_files() {
 
         $files = [];
@@ -618,19 +675,30 @@ class GH_CCK extends GFAddOn {
 	public static function maybe_export() {
 
 		if ( isset( $_POST['export_gravityhopper_cck_files'] ) ) {
-			check_admin_referer( 'gh_export_code_files', 'gh_export_code_files_nonce' );
-			$selected_files = rgpost( 'gh_code_file_name' );
-			if ( empty( $selected_files ) ) {
-				GFCommon::add_error_message( __( 'Please select the files to be exported', 'gravityhopper-cck' ) );
 
+			check_admin_referer( 'gh_export_code_files', 'gh_export_code_files_nonce' );
+
+			$selected_files = rgpost( 'gh_code_file_name' );
+
+			if ( empty( $selected_files ) ) {
+
+				GFCommon::add_error_message( __( 'Please select the files to be exported.', 'gravityhopper-cck' ) );
 				return;
+
 			}
 
 			self::export_files( $selected_files );
+
 		}
 
 	}
 
+    /**
+     * Package and trigger download of the exported files
+     *
+     * @param array $filenames
+     * @return void
+     */
 	public static function export_files( $filenames ) {
 
 		/**
@@ -661,15 +729,20 @@ class GH_CCK extends GFAddOn {
 
 	}
 
+    /**
+     * Get our directory located within WordPress uploads/
+     *
+     * @return void
+     */
     public static function get_upload_root() {
 
-        $dir = wp_upload_dir();
+        $wp_upload_dir = wp_upload_dir();
 
-        if ( $dir['error'] ) {
+        if ( $wp_upload_dir['error'] ) {
             return null;
         }
 
-        return $dir['basedir'] . '/gravity_hopper/code/';
+        return $wp_upload_dir['basedir'] . '/gravity_hopper/code/';
 
     }
 
@@ -692,14 +765,13 @@ class GH_CCK extends GFAddOn {
 
         switch ( $type ) {
             case 'error':
-            (new GH_CCK())->log_error( "{$method} :: {$log}" );
-            break;
+                (new GH_CCK())->log_error( "{$method} :: {$log}" );
+                break;
             case 'debug':
-            (new GH_CCK())->log_debug( "{$method} :: {$log}" );
-            break;
+                (new GH_CCK())->log_debug( "{$method} :: {$log}" );
+                break;
         }
 
     }
-
 
 }
