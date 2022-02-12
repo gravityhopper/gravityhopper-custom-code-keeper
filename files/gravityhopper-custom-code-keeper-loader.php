@@ -105,22 +105,53 @@ add_action( 'gform_loaded', function() {
     $code_loading = get_option( 'gravityhopper_cck_loading', true ) || ! file_exists( WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php' );
 
     if ( class_exists( 'GFForms' ) && version_compare( GFForms::$version, '2.5', '>' ) && $code_loading ) {
-      
-        $dir = wp_upload_dir();
-        $code_dir = $dir['basedir'] . '/gravity_hopper/';
+
+        $wp_upload_dir = wp_upload_dir();
+        $code_dir = $wp_upload_dir['basedir'] . '/gravity_hopper/';
 
         if ( file_exists( $code_dir . 'code' ) ) {
             
+            // include the global code file we've added
             if ( file_exists( $code_dir . 'code/gf-global-code.php' ) ) {
-                include_once $code_dir . 'code/gf-global-code.php';
+
+                include_once realpath( $code_dir ) . '/code/gf-global-code.php';
+
             }
             
-            foreach ( glob( $code_dir . "code/gf-*.php" ) as $filename ) {
-                include_once $filename;
+            // find and include files with filename matching pattern of explicitly allowed prefixes
+            $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array() );
+    
+            foreach ( $allowed_prefixes as $allowed_prefix ) {
+                
+                foreach ( glob( realpath( $code_dir ) . "/code/{$allowed_prefix}*.php" ) as $filename ) {
+                    
+                    include_once realpath( $filename );
+                    
+                }
+
             }
 
-            foreach ( glob( $code_dir . "code/gform-*.php" ) as $filename ) {
-                include_once $filename;
+            // merge active, inactive, trashed active, trashed inactive forms
+            $forms = array_merge( GFAPI::get_forms( true ), GFAPI::get_forms( false ), GFAPI::get_forms( true, true ), GFAPI::get_forms( false, true ) );
+            
+            // find and include files with filename matching explicit pattern of gform-*.php if form with corresponding ID exists
+            foreach ( glob( realpath( $code_dir ) . "/code/gform-*.php" ) as $filename ) {
+                
+                // strip directory path and filename to retrieve form ID
+                $form_id = ltrim( str_replace( [ realpath( $code_dir ), '/code/gform-', '.php' ], '', $filename ), '0' );
+                
+                // check existence of form with ID matching the file
+                $form = array_values( array_filter( $forms, function( $form ) use ( $form_id ) {
+                    return $form_id == rgar( $form, 'id' );
+                } ) );
+                
+                // only include file if matching form exists
+                if ( ! empty( $form[0] ) ) {
+
+                    include_once realpath( $filename );
+                    
+                }
+
             }
             
         }
