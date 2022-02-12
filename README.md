@@ -6,7 +6,7 @@ Gravity Custom Code Keeper…
 1. creates a directory at `wp-content/uploads/gravity_hopper/code/`.
 1. adds a file `gf-global-code.php` *(for housing globally run code)*.
 1. optionally creates/duplicates/deletes a `gf-00xx.php` file for every form created/duplicated/deleted. *(for housing form-specific code)*
-1. will load all files in the code directory which are prefixed with `gf-` and `gform-`.
+1. will load all files in the code directory associated with an existing form or having prefix that has been explicitly allowed.
 1. allows exporting any number of code files to compressed .zip.
 1. introduces a form settings page whereby you can preview relevant custom code and create a file if one doesn't yet exist.
 
@@ -39,11 +39,19 @@ Gravity Custom Code Keeper provides orderliness to your code customizations, giv
 Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of developer tools that integrates seamlessly with Gravity Forms.
 
 **Field Templates:** Add often-used fields and groups of fields to your hopper. Quickly search and add your field templates to a form.
+
 **Organized Forms:** Create folders and file forms and entries for easy access right when you need it.
+
 **Network Hub:** Set up a central dashboard for form development and management.
+
 **Form Integrity:** Form Integrity runs in the background to track form dependencies and alerts you when something seems to be missing.
+
 **Field Hinting:** Easily peek at the underlying settings of each field. Need to quickly review all field conditional logic? Get it done with a single click.
+
 **Field Notes:** Field Notes lets you track your form development and mark up fields with markdown commenting.
+
 **Keyboard Shortcuts:** An array of keyboard shortcuts for use in navigating your Gravity Forms dashboard.
+
 **Enhancements:** Introduces improvements to the Gravity Forms interface and featureset.
+
 **Configurations:** Set basic Gravity Forms options that otherwise need to be configured by code.
