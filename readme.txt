@@ -5,7 +5,7 @@ Tags: gravity, forms, code, developer, php, snippets
 Requires PHP: 7.2
 Requires at least: 5.6
 Tested up to: 5.9
-Stable tag: 2.1.2
+Stable tag: 2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ Gravity Custom Code Keeper…
 1. introduces a form settings page whereby you can preview relevant custom code and create a file if one doesn't yet exist.
 
 **Please note that Gravity Custom Code Keeper is intended for code organization only and doesn't restrict when code is run.**
-**All code residing in files prefixed with `gf-` or `gform-` in the `gravity_hopper/code/` directory will run for all forms.**
+**All code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms.**
 **Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.**
 
 Use the following filters for file auto-generation/duplication/deletion.
@@ -84,41 +84,5 @@ After installation and activation on your WordPress site, you will find a new `g
 
 == Changelog ==
 
-= 2.1.2 // 2022.02-Feb.11 =
-👌 IMPROVE: Mitigates local file inclusion risk
-📦 NEW: Adds filter `gravityhopper-cck/allowed_file_prefixes` to explicitly include other files
-!! BREAKING: Removes allowed prefix `gf-` for files
-
-= 2.1.1 // 2022.02-Feb.11 =
-👌 IMPROVE: Adds sanitization and escaping
-
-= 2.1 // 2022.02-Feb.09 =
-📦 NEW: Adds loader location and status indication to system report
-📦 NEW: Moves loader to plugin unless user has manually added loader to mu-plugins folder
-!! BREAKING: Renames filters for clarity as to how they behave
-
-= 2.0.1 // 2022.01-Jan.31 =
-🐛 FIX: Loads jquery & wp-util dependencies
-
-= 2.0 // 2022.01-Jan.21 =
-🚀 RELEASE: v2.0 renamed in preparation for WP plugin directory
-
-= 1.3 // 2022.01-Jan.21 =
-📦 NEW: Adds ability to request file creation from form setting page
-📦 NEW: Adds form file template during initialization
-📦 NEW: Allows file creation during import
-
-= 1.2 // 2022.01-Jan.20 =
-📦 NEW: Allows auto-duplication of files when forms are duplicated
-📦 NEW: Adds filter `gravityhopper-ca/duplicate_file` to control auto-duplication of files
-📦 NEW: Adds informational header and commented filters to generated `gf-global-code.php` file
-👌 IMPROVE: Initializes directory structure on installation
-👌 IMPROVE: Initializes created files with `<?php` opening tag
-
-= 1.1 // 2022.01-Jan.03 =
-📦 NEW: Adds filter `gravityhopper-ca/create_file` to control auto-creation of files
-🐛 FIX: Prevents mu-plugin template from showing in plugins list
-👌 IMPROVE: Constrain width of code previewer
-
-= 1.0 // 2021.12-Dec.29 =
-🚀 RELEASE: Initial launch
+= 2.2 // 2022.02-Feb.15 =
+🚀 RELEASE: Initial public launch
