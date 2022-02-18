@@ -18,7 +18,7 @@ class GH_CCK extends GFAddOn {
 	protected $_min_gravityforms_version = '2.5';
 	protected $_slug = 'gravityhopper_cck';
     protected $_short_title = 'Code Keeper';
-    protected $_title = 'Gravity Custom Code Keeper';
+    protected $_title = 'Custom Code Keeper';
 	protected $_path = 'gravityhopper-custom-code-keeper/gravityhopper-custom-code-keeper.php';
 	protected $_full_path = GRAVITYHOPPER_CCK_DIR_PATH;
     protected $_capabilities_form_settings = 'manage_options';

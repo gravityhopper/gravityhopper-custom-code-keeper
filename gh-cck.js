@@ -1,5 +1,5 @@
 /**
-* Gravity Custom Code Keeper Scripts
+* Custom Code Keeper Scripts
 */
 
 jQuery(document).ready(function( $ ) {
