@@ -10,6 +10,15 @@
 
 add_filter( 'gform_system_report', function( $system_report ) {
 
+    $wp_upload_dir = wp_upload_dir();
+    $code_dir = $wp_upload_dir['basedir'] . '/gravity_hopper/';
+
+    if ( file_exists( $code_dir . 'code' ) ) {
+        $code_location = $code_dir . 'code';
+    } else {
+        $code_location = 'Custom code directory does not exists.';
+    }
+
     $table = array(
         'title'        => esc_html__( 'Custom Code Keeper', 'gravityhopper-cck' ),
         'title_export' => 'Custom Code Keeper',
@@ -20,9 +29,19 @@ add_filter( 'gform_system_report', function( $system_report ) {
                 'value'        => __DIR__,
             ),
             array(
+                'label'        => esc_html__( 'Custom Code Location', 'gravityhopper-cck' ),
+                'label_export' => 'Custom Code Location',
+                'value'        => esc_html__( $code_location, 'gravityhopper-cck' ),
+            ),
+            array(
                 'label'        => esc_html__( 'Code Loading', 'gravityhopper-cck' ),
                 'label_export' => 'Code Loading',
-                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  esc_html__( 'Code is Active', 'gravityforms' ) : esc_html__( 'Disabled', 'gravityforms' ),
+                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  esc_html__( 'Code is Active', 'gravityhopper-cck' ) : esc_html__( 'Disabled', 'gravityhopper-cck' ),
+            ),
+            array(
+                'label'         => esc_html__( 'Allowed Prefixes', 'gravityhopper-cck' ),
+                'label_export'  => 'Allowed File Prefixes',
+                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array() ) )
             )
         )
     );
