@@ -12,40 +12,10 @@ Custom Code Keeper for Gravity Forms…
 
 **Please note that Custom Code Keeper is intended for code organization only and doesn't restrict when code is run. All code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.**
 
-Use the following filters to override default behavior for file auto-generation/duplication/deletion. Each defaults to `false`.
-
-```
-add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
-add_filter( 'gravityhopper-cck/create_file_after_duplicate_form', '__return_true' );
-add_filter( 'gravityhopper-cck/remove_file_after_delete_form', '__return_true' );
-```
-
 ### Why use it?
 Custom Code Keeper provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
 
-**Organization:** Our file-per-form framework for organizing your code helps you keep your code in a way that is easier to access, investigate, and update.
-
-**Preservation:** Having your code reside outside of a specific plugin or theme ensures it is not lost to theme updates or plugin deactivation.
-
-**Portability:** A form is often only as good as the code that stands behind it. Taking your form to another site? Code file exports make it easy to pull the code you need.
+Learn more in the walk-through article _[What is Custom Code Keeper for Gravity Forms?](https://gravityhopper.com/custom-code-keeper-for-gravity-forms/)_
 
 ### Need more for your Gravity Forms development?
-Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of developer tools that integrates seamlessly with Gravity Forms.
-
-**Field Templates:** Add often-used fields and groups of fields to your hopper. Quickly search and add your field templates to a form.
-
-**Organized Forms:** Create folders and file forms and entries for easy access right when you need it.
-
-**Network Hub:** Set up a central dashboard for form development and management.
-
-**Form Integrity:** Form Integrity runs in the background to track form dependencies and alerts you when something seems to be missing.
-
-**Field Hinting:** Easily peek at the underlying settings of each field. Need to quickly review all field conditional logic? Get it done with a single click.
-
-**Field Notes:** Field Notes lets you track your form development and mark up fields with markdown commenting.
-
-**Keyboard Shortcuts:** An array of keyboard shortcuts for use in navigating your Gravity Forms dashboard.
-
-**Enhancements:** Introduces improvements to the Gravity Forms interface and featureset.
-
-**Configurations:** Set basic Gravity Forms options that otherwise need to be configured by code.
+Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of builder tools that integrates seamlessly with Gravity Forms.
