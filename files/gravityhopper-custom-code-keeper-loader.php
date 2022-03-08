@@ -87,7 +87,7 @@ add_action( 'gform_loaded', function() {
             }
 
             // merge active, inactive, trashed active, trashed inactive forms
-            $forms = array_merge( GFAPI::get_forms( true ), GFAPI::get_forms( false ), GFAPI::get_forms( true, true ), GFAPI::get_forms( false, true ) );
+            $forms = GFAPI::get_forms( null, null );
             
             // find and include files with filename matching explicit pattern of gform-*.php if form with corresponding ID exists
             foreach ( glob( realpath( $code_dir ) . "/code/gform-*.php" ) as $filename ) {
@@ -113,7 +113,7 @@ add_action( 'gform_loaded', function() {
 
     }
 
-}, 1 );
+}, 1, 0 );
 
 add_filter( 'plugin_action_links', function( $actions, $plugin_file, $plugin_data, $context ) {
 
