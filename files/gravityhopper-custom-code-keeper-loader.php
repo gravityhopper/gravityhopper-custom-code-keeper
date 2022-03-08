@@ -55,7 +55,7 @@ add_filter( 'gform_system_report', function( $system_report ) {
 
 }, 11 );
 
-add_action( 'gform_loaded', function() {
+add_action( 'init', function() {
 
     $code_loading = get_option( 'gravityhopper_cck_loading', true ) || ! file_exists( WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php' );
 
