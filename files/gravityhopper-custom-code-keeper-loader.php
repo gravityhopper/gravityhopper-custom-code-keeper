@@ -10,6 +10,15 @@
 
 add_filter( 'gform_system_report', function( $system_report ) {
 
+    $wp_upload_dir = wp_upload_dir();
+    $code_dir = $wp_upload_dir['basedir'] . '/gravity_hopper/';
+
+    if ( file_exists( $code_dir . 'code' ) ) {
+        $code_location = $code_dir . 'code';
+    } else {
+        $code_location = 'Custom code directory does not exists.';
+    }
+
     $table = array(
         'title'        => esc_html__( 'Custom Code Keeper', 'gravityhopper-cck' ),
         'title_export' => 'Custom Code Keeper',
@@ -20,9 +29,19 @@ add_filter( 'gform_system_report', function( $system_report ) {
                 'value'        => __DIR__,
             ),
             array(
+                'label'        => esc_html__( 'Custom Code Location', 'gravityhopper-cck' ),
+                'label_export' => 'Custom Code Location',
+                'value'        => esc_html__( $code_location, 'gravityhopper-cck' ),
+            ),
+            array(
                 'label'        => esc_html__( 'Code Loading', 'gravityhopper-cck' ),
                 'label_export' => 'Code Loading',
-                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  esc_html__( 'Code is Active', 'gravityforms' ) : esc_html__( 'Disabled', 'gravityforms' ),
+                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  esc_html__( 'Code is Active', 'gravityhopper-cck' ) : esc_html__( 'Disabled', 'gravityhopper-cck' ),
+            ),
+            array(
+                'label'         => esc_html__( 'Allowed Prefixes', 'gravityhopper-cck' ),
+                'label_export'  => 'Allowed File Prefixes',
+                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array() ) )
             )
         )
     );
@@ -55,52 +74,7 @@ add_filter( 'gform_system_report', function( $system_report ) {
 
 }, 11 );
 
-add_filter( 'gform_system_report', function( $system_report ) {
-
-    $table = array(
-        'title'        => esc_html__( 'Custom Code Keeper', 'gravityhopper-cck' ),
-        'title_export' => 'Custom Code Keeper',
-        'items'        => array(
-            array(
-                'label'        => esc_html__( 'Loader Location', 'gravityhopper-cck' ),
-                'label_export' => 'Loader Location',
-                'value'        => __DIR__,
-            ),
-            array(
-                'label'        => esc_html__( 'Code Loading', 'gravityhopper-cck' ),
-                'label_export' => 'Code Loading',
-                'value'        => get_option( 'gravityhopper_cck_loading', true ) ?  __( 'Code is Active', 'gravityforms' ) : __( 'Disabled', 'gravityforms' ),
-            )
-        )
-    );
-
-    if ( is_plugin_active( 'gravityhopper/gravityhopper.php' ) ) {
-
-        foreach ( $system_report as &$section ) {
-            
-            if ( $section['title'] == 'Gravity Hopper Environment' ) {
-                $section['tables'][] = $table;
-            }
-    
-        }
-
-    } else {
-
-        $system_report[] = array(
-            'title'        => esc_html__( 'Gravity Hopper Environment', 'gravityforms' ),
-            'title_export' => 'Gravity Hopper Environment',
-            'tables'       => array(
-                $table
-            )
-        );
-
-    }
-
-    return $system_report;
-
-}, 11 );
-
-add_action( 'gform_loaded', function() {
+add_action( 'init', function() {
 
     $code_loading = get_option( 'gravityhopper_cck_loading', true ) || ! file_exists( WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.php' );
 
@@ -132,7 +106,7 @@ add_action( 'gform_loaded', function() {
             }
 
             // merge active, inactive, trashed active, trashed inactive forms
-            $forms = array_merge( GFAPI::get_forms( true ), GFAPI::get_forms( false ), GFAPI::get_forms( true, true ), GFAPI::get_forms( false, true ) );
+            $forms = GFAPI::get_forms( null, null );
             
             // find and include files with filename matching explicit pattern of gform-*.php if form with corresponding ID exists
             foreach ( glob( realpath( $code_dir ) . "/code/gform-*.php" ) as $filename ) {
@@ -158,7 +132,7 @@ add_action( 'gform_loaded', function() {
 
     }
 
-}, 1 );
+}, 1, 0 );
 
 add_filter( 'plugin_action_links', function( $actions, $plugin_file, $plugin_data, $context ) {
 
