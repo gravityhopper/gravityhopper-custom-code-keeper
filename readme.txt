@@ -4,8 +4,8 @@ Donate link: https://gravityhopper.com
 Tags: gravity, forms, code, developer, php, snippets
 Requires PHP: 7.2
 Requires at least: 5.6
-Tested up to: 5.9.1
-Stable tag: 2.3
+Tested up to: 6.0
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,9 @@ Finally, any form-specific files named using the convention `gform-00xx.php` wil
 After installation and activation on your WordPress site, you will find a new `gravity_hopper/code` directory for housing your Gravity Forms related code within your WordPress site's `upload` folder.
 
 == Changelog ==
+
+= 2.3.1 // 2022.05-May. =
+✨ IMPROVE: Performance in checking files to load
 
 = 2.3 // 2022.03-Mar.08 =
 🐛 FIX: Load on `init` rather than `gform_loaded` to prevent form breakage

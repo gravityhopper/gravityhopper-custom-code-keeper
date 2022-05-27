@@ -104,9 +104,6 @@ add_action( 'init', function() {
                 }
 
             }
-
-            // merge active, inactive, trashed active, trashed inactive forms
-            $forms = GFAPI::get_forms( null, null );
             
             // find and include files with filename matching explicit pattern of gform-*.php if form with corresponding ID exists
             foreach ( glob( realpath( $code_dir ) . "/code/gform-*.php" ) as $filename ) {
@@ -114,13 +111,8 @@ add_action( 'init', function() {
                 // strip directory path and filename to retrieve form ID
                 $form_id = ltrim( str_replace( [ realpath( $code_dir ), '/code/gform-', '.php' ], '', $filename ), '0' );
                 
-                // check existence of form with ID matching the file
-                $form = array_values( array_filter( $forms, function( $form ) use ( $form_id ) {
-                    return $form_id == rgar( $form, 'id' );
-                } ) );
-                
                 // only include file if matching form exists
-                if ( ! empty( $form[0] ) ) {
+                if ( GFAPI::form_id_exists( (int) $form_id ) ) {
 
                     include_once realpath( $filename );
                     
