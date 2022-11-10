@@ -1,10 +1,10 @@
 === Custom Code Keeper for Gravity Forms ===
 Contributors: uamv
-Donate link: https://gravityhopper.com
+Donate link: https://typewheel.xyz/give/?via=GH-CCK
 Tags: gravity, forms, code, developer, php, snippets
 Requires PHP: 7.2
 Requires at least: 5.6
-Tested up to: 6.0
+Tested up to: 6.1
 Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -62,8 +62,9 @@ After installation and activation on your WordPress site, you will find a new `g
 
 == Changelog ==
 
-= 2.3.1 // 2022.05-May. =
+= 2.3.1 // 2022.11-Nov.10 =
 ✨ IMPROVE: Performance in checking files to load
+📖 DOC: Tested up to 6.1
 
 = 2.3 // 2022.03-Mar.08 =
 🐛 FIX: Load on `init` rather than `gform_loaded` to prevent form breakage

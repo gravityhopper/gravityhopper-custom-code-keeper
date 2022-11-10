@@ -11,7 +11,7 @@
 * @package gravityhopper
 * @version 2.3.1
 * @author uamv
-* @copyright Copyright (c) 2021, uamv
+* @copyright Copyright (c) 2022, Typewheel
 * @link https://gravityhopper.com
 * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.1.html
 */
