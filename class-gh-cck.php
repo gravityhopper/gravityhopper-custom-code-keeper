@@ -71,6 +71,8 @@ class GH_CCK extends GFAddOn {
 
         add_filter( 'gform_export_menu',                            [ $this, 'add_export_menu_item' ]                       );
         add_action( 'gform_export_page_export_gravityhopper_cck',   [ $this, 'add_export_page' ]                            );
+
+        add_filter( 'gravityhopper-ks/keyboard_shortcuts',          [ $this, 'keyboard_shortcuts' ]                         );
         
         $this->maybe_export();
 
@@ -743,6 +745,25 @@ class GH_CCK extends GFAddOn {
         }
 
         return $wp_upload_dir['basedir'] . '/gravity_hopper/code/';
+
+    }
+
+    public function keyboard_shortcuts( $shortcuts ) {
+
+        $screen = get_current_screen();
+
+        if ( rgget( 'id' ) && $screen->parent_base == 'gf_edit_forms' ) {
+
+            $shortcuts['Gravity Hopper']['Custom Code Keeper']['custom_code_keeper'] = [
+                'keys' => 'g <',
+                'function' => 'window.location.href = `${window.location.pathname}?page=gf_edit_forms&view=settings&subview=gravityhopper_cck&id={{id}}`;',
+                'description' => 'Go to Custom Code',
+                'priority' => 10
+            ];
+
+        }
+
+        return $shortcuts;
 
     }
 

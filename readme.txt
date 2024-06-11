@@ -62,6 +62,9 @@ After installation and activation on your WordPress site, you will find a new `g
 
 == Changelog ==
 
+= 2.3.2 // 2024. =
+📦 NEW: Adds integration with Gravity Hopper: Keyboard Shortcut module
+
 = 2.3.1 // 2022.11-Nov.10 =
 ✨ IMPROVE: Performance in checking files to load
 📖 DOC: Tested up to 6.1
