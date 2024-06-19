@@ -1,6 +1,6 @@
 <?php
 /**
-* Plugin Name: Code Keep for Gravity Forms
+* Plugin Name: PHP Code Keeper for Gravity Forms
 * Plugin URI: https://wordpress.org/plugins/custom-code-keeper
 * Description: Provides a reliable and consistent way to create, store, edit, and load custom form-related PHP code on your site.
 * Version: 2.4
