@@ -36,14 +36,16 @@ foreach ( $files as $file_name ) {
 
 } ?>
 
-<div id="gravityhopper_cck-create_file_container" class="gform-settings-panel__content">
-    <div id="gravityhopper_cck-create_file_name_container">
-        <span><?php esc_html_e( $current_prefix ); ?></span>
-        <input type="text" id="filename" placeholder="Enter file name">
-        <span id="filename-sizer" style="position:absolute; top:-9999px; left:-9999px;"></span>
-        <span>.php</span>
+<?php if ( $current_prefix != 'gform-' ) : ?>
+    <div id="gravityhopper_cck-create_file_container" class="gform-settings-panel__content">
+        <div id="gravityhopper_cck-create_file_name_container">
+            <span><?php esc_html_e( $current_prefix ); ?></span>
+            <input type="text" id="filename" placeholder="Enter file name">
+            <span id="filename-sizer" style="position:absolute; top:-9999px; left:-9999px;"></span>
+            <span>.php</span>
+        </div>
+        <div id="gravityhopper_cck-create_file_trigger_container" class="gform-settings-panel__content" style="font-style:italic; padding: 1.4em; font-size: 80%;">
+            <button type="submit" id="gravityhopper_cck_create--<?php esc_attr_e( $current_prefix ); ?>" data-nonce="<?php esc_attr_e( $nonce ); ?>" data-prefix="<?php esc_attr_e( $current_prefix ); ?>" name="create--<?php esc_attr_e( $current_prefix ); ?>" value="create" class="primary button large">Create New File</button>
+        </div>
     </div>
-    <div id="gravityhopper_cck-create_file_trigger_container" class="gform-settings-panel__content" style="font-style:italic; padding: 1.4em; font-size: 80%;">
-        <button type="submit" id="gravityhopper_cck_create--<?php esc_attr_e( $current_prefix ); ?>" data-nonce="<?php esc_attr_e( $nonce ); ?>" data-prefix="<?php esc_attr_e( $current_prefix ); ?>" name="create--<?php esc_attr_e( $current_prefix ); ?>" value="create" class="primary button large">Create New File</button>
-    </div>
-</div>
+<?php endif; ?>
