@@ -1,13 +1,4 @@
 <?php
-/*
-	Plugin Name: Custom Code Keeper for Gravity Forms Loader
-    Plugin URI: https://wordpress.org/plugins/custom-code-keeper
-	Description: Loads Gravity Forms related code from allowed files residing in the `gravity_hopper/code/` uploads directory.
-    Author: Gravity Hopper
-    Author URI: https://gravityhopper.com
-	Version: 2.1.1
-*/
-
 add_filter( 'gform_system_report', function( $system_report ) {
 
     $wp_upload_dir = wp_upload_dir();
