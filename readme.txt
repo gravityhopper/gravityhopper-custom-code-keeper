@@ -1,7 +1,7 @@
 === PHP Code Keeper for Gravity Forms ===
 Contributors: uamv
 Donate link: https://typewheel.xyz/give/?via=GH-CCK
-Tags: gravity, forms, code, developer, php, snippets
+Tags: gravity, code, developer, php, snippets
 Requires PHP: 7.4
 Requires at least: 5.6
 Tested up to: 6.5.4
