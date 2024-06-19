@@ -41,7 +41,7 @@ add_filter( 'gform_system_report', function( $system_report ) {
             array(
                 'label'         => esc_html__( 'Allowed Prefixes', 'gravityhopper-cck' ),
                 'label_export'  => 'Allowed File Prefixes',
-                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-', 'gw-' ) ) )
+                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-' ) ) )
             )
         )
     );
@@ -99,7 +99,7 @@ add_action( 'init', function() {
             }
             
             // find and include files with filename matching pattern of explicitly allowed prefixes
-            $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-', 'gw-' ) );
+            $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-' ) );
     
             foreach ( $allowed_prefixes as $allowed_prefix ) {
                 

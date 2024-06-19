@@ -14,3 +14,7 @@
 // add_filter( 'gravityhopper-cck/create_file_after_new_form', '__return_true' );
 // add_filter( 'gravityhopper-cck/create_file_after_duplicate_form', '__return_true' );
 // add_filter( 'gravityhopper-cck/remove_file_after_delete_form', '__return_true' );
+
+// add_filter( 'gravityhopper-cck/allowed_file_prefixes', function( $prefixes ) {
+//     return array_merge( $prefixes, [  ] );
+// } );

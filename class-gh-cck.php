@@ -329,14 +329,15 @@ class GH_CCK extends GFAddOn {
 
             if ( $current_screen->id == 'forms_page_gravityhopper_cck' ) {
 
-                $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-', 'gw-' ) );
+                $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-' ) );
                 $allowed_prefixes[] = 'gform-';
                 
                 $tabs = [];
                 foreach ( $allowed_prefixes as $prefix ) {
                     $tabs[] = array(
-                        'name' => $prefix,
-                        'label' => "{$prefix}*.php"
+                        'name'  => $prefix,
+                        'label' => "{$prefix}*.php",
+                        'icon'  => 'dashicons-editor-code'
                     );
                 }
 
