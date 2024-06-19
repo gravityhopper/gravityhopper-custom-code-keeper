@@ -41,7 +41,7 @@ add_filter( 'gform_system_report', function( $system_report ) {
             array(
                 'label'         => esc_html__( 'Allowed Prefixes', 'gravityhopper-cck' ),
                 'label_export'  => 'Allowed File Prefixes',
-                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array() ) )
+                'value'         => implode( ', ', apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-' ) ) )
             )
         )
     );
@@ -82,48 +82,57 @@ add_action( 'init', function() {
 
         $wp_upload_dir = wp_upload_dir();
         $code_dir = $wp_upload_dir['basedir'] . '/gravity_hopper/';
+        $doing_file_test = urldecode( rgget( 'ghcck-testing-edits' ) );
+        $doing_deletion_test = urldecode( rgget( 'ghcck-testing-deletion' ) );
 
+        GFCommon::log_debug( current_filter() . ": testing: {$doing_file_test}" );
+        
         if ( file_exists( $code_dir . 'code' ) ) {
             
             // include the global code file we've added
-            if ( file_exists( $code_dir . 'code/gf-global-code.php' ) ) {
-
+            GFCommon::log_debug( current_filter() . ": Global Temp GET: {$doing_file_test}" );
+            
+            if ( $doing_file_test == realpath( $code_dir ) . '/code/gf-global-code.php' && file_exists( realpath( $code_dir ) . '/code/gf-global-code-tmp.php' ) ) {
+                include_once realpath( $code_dir ) . '/code/gf-global-code-tmp.php';
+            } else if ( file_exists( $code_dir . 'code/gf-global-code.php' ) ) {
                 include_once realpath( $code_dir ) . '/code/gf-global-code.php';
-
             }
             
             // find and include files with filename matching pattern of explicitly allowed prefixes
-            $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array() );
+            $allowed_prefixes = apply_filters( 'gravityhopper-cck/allowed_file_prefixes', array( 'gf-' ) );
     
             foreach ( $allowed_prefixes as $allowed_prefix ) {
                 
                 foreach ( glob( realpath( $code_dir ) . "/code/{$allowed_prefix}*.php" ) as $filename ) {
+
+                    if ( $doing_file_test == realpath( $filename ) && file_exists( realpath( str_replace( '.php', '-tmp.php', $filename ) ) ) ) {
+                        include_once realpath( str_replace( '.php', '-tmp.php', $filename ) );
+                    } else if ( strpos( $filename, '-tmp.php' ) === false && $doing_deletion_test != realpath( $filename ) ) {
+                        include_once realpath( $filename );
+                    }
                     
-                    include_once realpath( $filename );
                     
                 }
 
             }
-
-            // merge active, inactive, trashed active, trashed inactive forms
-            $forms = GFAPI::get_forms( null, null );
             
             // find and include files with filename matching explicit pattern of gform-*.php if form with corresponding ID exists
             foreach ( glob( realpath( $code_dir ) . "/code/gform-*.php" ) as $filename ) {
                 
-                // strip directory path and filename to retrieve form ID
-                $form_id = ltrim( str_replace( [ realpath( $code_dir ), '/code/gform-', '.php' ], '', $filename ), '0' );
-                
-                // check existence of form with ID matching the file
-                $form = array_values( array_filter( $forms, function( $form ) use ( $form_id ) {
-                    return $form_id == rgar( $form, 'id' );
-                } ) );
-                
-                // only include file if matching form exists
-                if ( ! empty( $form[0] ) ) {
+                if ( $doing_file_test == realpath( $filename ) && file_exists( realpath( str_replace( '.php', '-tmp.php', $filename ) ) ) ) {
+                    include_once realpath( str_replace( '.php', '-tmp.php', $filename ) );
+                } else if ( strpos( $filename, '-tmp.php' ) === false && $doing_deletion_test != realpath( $filename ) ) {
 
-                    include_once realpath( $filename );
+                    // strip directory path and filename to retrieve form ID
+                    $form_id = ltrim( str_replace( [ realpath( $code_dir ), '/code/gform-', '.php' ], '', $filename ), '0' );
                     
+                    // only include file if matching form exists
+                    if ( GFAPI::form_id_exists( (int) $form_id ) ) {
+
+                        include_once realpath( $filename );
+                        
+                    }
+
                 }
 
             }

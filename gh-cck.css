@@ -1,0 +1,96 @@
+.forms_page_gravityhopper_cck .gf_admin_page_title {
+    display: none;
+}
+
+.gravityhopper_cck_editor {
+    margin-bottom: 1em;
+}
+.gform-admin .gform-alert.gform-alert--inline#alert-gravityhopper_cck {
+    padding-block-start: 2px;
+    padding-block-end: 2px;
+}
+.gravityhopper_cck_editor.gform-settings-panel .gform-settings-panel__content {
+    /* padding: 0; */
+}
+.gravityhopper_cck_editor .gform-settings-panel__content {
+    min-height: 600px;
+}
+.gravityhopper_cck_editor .CodeMirror {
+    border: 1px solid #e1e1e1;
+}
+.gravityhopper_cck_editor .CodeMirror {
+    font-size: 11px;
+    min-height: 70vh;
+}
+.CodeMirror-sizer::before {
+	content: '<?php';
+}
+.gravityhopper_cck_alert_container {
+    width: fit-content;
+}
+#alert-gravityhopper_cck {
+    margin-bottom: 0;
+}
+.gravityhopper_cck_alert_container #alert-gravityhopper_cck .gform-alert__icon {
+    inset-block-start: 5px;
+    inset-inline-start: 5px;
+}
+.gravityhopper_cck_alert_container #alert-gravityhopper_cck .gform-alert__message-wrap {
+    padding-inline-start: 20px;
+    min-height: 26px;
+}
+.gravityhopper_cck_alert_container #alert-gravityhopper_cck .gform-alert__message {
+    padding-block-start: 4px;
+}
+
+.gravityhopper_cck_editor .gravityhopper_cck_file_action_container {
+    margin: 1rem 0 0;
+    display: grid;
+    grid-gap: 1em;
+    grid-auto-flow: column;
+    grid-template-columns: auto 1fr auto;
+}
+.gravityhopper_cck_editor .gravityhopper_cck_file_action_container div:last-child:not(.gravityhopper_cck_alert_container) {
+    justify-self: right;
+}
+
+#gravityhopper_cck-create_file_container {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr auto;
+    justify-items: right;
+    align-items: center;
+}
+
+#gravityhopper_cck-create_file_name_container {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+}
+#gravityhopper_cck-create_file_name_container span,
+#gravityhopper_cck-create_file_name_container input {
+    font-weight: bold;
+    font-size: 15px;
+    font-family: monospace;
+}
+#gravityhopper_cck-create_file_name_container span:first-child {
+    padding-right: .25em;
+}
+#gravityhopper_cck-create_file_name_container span:last-child {
+    padding-left: .2em;
+}
+#gravityhopper_cck-create_file_name_container input {
+    width: 185px;
+    min-width: 185px !important;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+#filename-sizer {
+    font-size: 15px;
+    padding-left: .75em;
+    padding-right: .75em;
+    font-family: monospace; /* match input font */
+    border: 1px solid #ccc; /* match input border */
+    box-sizing: border-box; /* include padding in width */
+    white-space: pre; /* preserve whitespace */
+  }

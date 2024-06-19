@@ -1,17 +1,17 @@
 <?php
 /**
-* Plugin Name: Custom Code Keeper
+* Plugin Name: PHP Code Keeper for Gravity Forms
 * Plugin URI: https://wordpress.org/plugins/custom-code-keeper
-* Description: Provides a reliable and consistent way to store and load custom form-related code on your site.
-* Version: 2.3
+* Description: Provides a reliable and consistent way to create, store, edit, and load custom form-related PHP code on your site.
+* Version: 2.4
 * Author: Gravity Hopper
 * Author URI: https://gravityhopper.com
 * Text Domain: gravityhopper-cck
 *
 * @package gravityhopper
-* @version 2.3
+* @version 2.4
 * @author uamv
-* @copyright Copyright (c) 2021, uamv
+* @copyright Copyright (c) 2022, Typewheel
 * @link https://gravityhopper.com
 * @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.1.html
 */
@@ -27,7 +27,7 @@ if ( ! file_exists( WPMU_PLUGIN_DIR . '/gravityhopper-custom-code-keeper-loader.
 
 if ( ! function_exists( 'run_gravityhopper_custom_code_keeper' ) ) :
 
-    define( 'GRAVITYHOPPER_CCK_VERSION', '2.3' );
+    define( 'GRAVITYHOPPER_CCK_VERSION', '2.4' );
     define( 'GRAVITYHOPPER_CCK_DIR_PATH', plugin_dir_path( __FILE__ ) );
     define( 'GRAVITYHOPPER_CCK_DIR_URL', plugin_dir_url( __FILE__ ) );
 
