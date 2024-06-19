@@ -5,7 +5,7 @@ Tags: gravity, code, developer, php, snippets
 Requires PHP: 7.4
 Requires at least: 5.6
 Tested up to: 6.5.4
-Stable tag: 2.4
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,7 +58,7 @@ Finally, any form-specific files named using the convention `gform-00xx.php` wil
 
 == Changelog ==
 
-= 2.4 // 2024.06-Jun.19 =
+= 3.0 // 2024.06-Jun.19 =
 📦 NEW: Allows file editing and management via UI
 📦 NEW: Adds integration with Gravity Hopper: Keyboard Shortcut module
 
