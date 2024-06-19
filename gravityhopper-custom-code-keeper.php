@@ -1,20 +1,17 @@
 <?php
-/**
-* Plugin Name: PHP Code Keeper for Gravity Forms
-* Plugin URI: https://wordpress.org/plugins/custom-code-keeper
-* Description: Provides a reliable and consistent way to create, store, edit, and load custom form-related PHP code on your site.
-* Version: 2.4
-* Author: Gravity Hopper
-* Author URI: https://gravityhopper.com
-* Text Domain: gravityhopper-cck
-*
-* @package gravityhopper
-* @version 2.4
-* @author uamv
-* @copyright Copyright (c) 2022, Typewheel
-* @link https://gravityhopper.com
-* @license http://www.gnu.org/licenses/old-licenses/gpl-2.0.1.html
-*/
+/*
+ * Plugin Name:       Gravity PHP Code Keeper
+ * Plugin URI:        https://wordpress.org/plugins/custom-code-keeper
+ * Description:       Provides a reliable and consistent way to create, store, edit, and load custom form-related PHP code on your site.
+ * Version:           2.4
+ * Requires at least: 5.6
+ * Requires PHP:      7.4
+ * Author:            Gravity Hopper
+ * Author URI:        https://gravityhopper.com/
+ * License:           GPL v2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       gravityhopper-cck
+ */
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
