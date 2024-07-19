@@ -817,7 +817,7 @@ class GH_CCK extends GFAddOn {
 	 * @parap $code string The code to render in the editor.
 	 */
 	public static function get_file_editor_markup( $file_name, $args = [] ) {
-        do_action( 'qm/debug', $file_name );
+        
         $defaults = array(
             'collapsible' => false,
             'collapsed' => true,
