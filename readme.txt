@@ -58,9 +58,6 @@ Finally, any form-specific files named using the convention `gform-00xx.php` wil
 
 == Changelog ==
 
-= 3.0.1 // 2024.10-Oct.24 =
-✨ IMPROVE: Remove unnecessary logging
-
 = 3.0 // 2024.06-Jun.19 =
 📦 NEW: Allows file editing and management via UI
 📦 NEW: Adds integration with Gravity Hopper: Keyboard Shortcut module

@@ -76,7 +76,12 @@ add_action( 'init', function() {
         $doing_file_test = urldecode( rgget( 'ghcck-testing-edits' ) );
         $doing_deletion_test = urldecode( rgget( 'ghcck-testing-deletion' ) );
 
-        if ( file_exists( $code_dir . 'code' ) && ( $doing_file_test || $doing_deletion_test ) ) {
+        GFCommon::log_debug( current_filter() . ": testing: {$doing_file_test}" );
+        
+        if ( file_exists( $code_dir . 'code' ) ) {
+            
+            // include the global code file we've added
+            GFCommon::log_debug( current_filter() . ": Global Temp GET: {$doing_file_test}" );
             
             if ( $doing_file_test == realpath( $code_dir ) . '/code/gf-global-code.php' && file_exists( realpath( $code_dir ) . '/code/gf-global-code-tmp.php' ) ) {
                 include_once realpath( $code_dir ) . '/code/gf-global-code-tmp.php';
