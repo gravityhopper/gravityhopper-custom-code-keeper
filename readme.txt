@@ -30,17 +30,17 @@ PHP Code Keeper for Gravity Forms…
 
 PHP Code Keeper provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
 
-Learn more in the walk-through article _[What is PHP Code Keeper for Gravity Forms?](https://gravityhopper.com/custom-code-keeper-for-gravity-forms/)_
+Learn more in the walk-through article _[What is PHP Code Keeper for Gravity Forms?](https://orbitalforge.com/custom-code-keeper-for-gravity-forms/)_
 
 = Need more for your Gravity Forms development? =
 
-Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of builder tools that integrates seamlessly with Gravity Forms.
+Saving you time and effort with every form you build, **[Orbital Forge](https://orbitalforge.com)** offers an elite array of builder tools that integrates seamlessly with Gravity Forms.
 
 == Frequently Asked Questions ==
 
 = Does PHP Code Keeper load custom code per form? =
 
-No. This plugin is intended for code wrangling only and does not restrict when code is run. AAll code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
+No. This plugin is intended for code wrangling only and does not restrict when code is run. All code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
 
 = Can I edit the custom code from within my WordPress dashboard? =
 
