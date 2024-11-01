@@ -5,7 +5,7 @@ Tags: gravity, code, developer, php, snippets
 Requires PHP: 7.4
 Requires at least: 5.6
 Tested up to: 6.5.4
-Stable tag: 3.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,9 @@ Any files matching prefix patterns allowed via the filter `gravityhopper-cck/all
 Finally, any form-specific files named using the convention `gform-00xx.php` will be loaded next, provided a form matching the ID exists on the site.
 
 == Changelog ==
+
+= 3.0.1 // 2024.11-Nov.01 =
+✨ IMPROVE: Remove unnecessary logging
 
 = 3.0 // 2024.06-Jun.19 =
 📦 NEW: Allows file editing and management via UI
