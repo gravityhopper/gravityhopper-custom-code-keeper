@@ -25,6 +25,9 @@
 .CodeMirror-sizer::before {
 	content: '<?php';
 }
+.gravityhopper_cck_editor .CodeMirror-scroll {
+    height: 96%;
+}
 .gravityhopper_cck_alert_container {
     width: fit-content;
 }
