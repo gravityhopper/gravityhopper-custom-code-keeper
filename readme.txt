@@ -46,6 +46,18 @@ No. This plugin is intended for code wrangling only and does not restrict when c
 
 Yes! Create, edit, and delete files via **Forms → Code** and **Form → Settings → Code Keep**
 
+You can also add a link to open the files directly in your preferred code editor using the filter `gravityhopper-cck/opoen_file_uri`.
+
+```
+add_filter( 'gravityhopper-cck/open_file_uri', function( $uri, $filename ) {
+	return array(
+		'app' 		=> 'VS Code',
+		'protocol' 	=> 'vscode:/',
+		'path'		=> $filename
+	);
+}, 10, 2 );
+```
+
 = How are files loaded? =
 
 Allowed files within the directory `gravity_hopper/code/` of your uploads directory will be loaded.
@@ -58,8 +70,13 @@ Finally, any form-specific files named using the convention `gform-00xx.php` wil
 
 == Changelog ==
 
+= 3.1 // 2025.01-Jan.23 =
+📦 NEW: Adds `gravityhopper-cck/open_file_uri` filter
+📖 DOC: Rebrands authorship to Orbital Forge
+
 = 3.0.1 // 2024.11-Nov.01 =
 ✨ IMPROVE: Remove unnecessary logging
+✨ IMPROVE: Adjust height of editor to ensure visibility of last line
 
 = 3.0 // 2024.06-Jun.19 =
 📦 NEW: Allows file editing and management via UI

@@ -96,4 +96,13 @@
     border: 1px solid #ccc; /* match input border */
     box-sizing: border-box; /* include padding in width */
     white-space: pre; /* preserve whitespace */
-  }
+}
+a.gform-settings-panel__open_file-link {
+    position: absolute;
+    right: 1.25rem;
+    top: 0.8rem;
+    text-decoration: none;
+}
+.gform-settings-panel__collapsible-control+a.gform-settings-panel__open_file-link {
+    right: 3rem;
+}

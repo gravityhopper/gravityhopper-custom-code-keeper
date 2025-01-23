@@ -67,7 +67,7 @@ class GH_CCK extends GFAddOn {
         add_filter( 'gform_form_settings_menu',                     [ $this, 'add_form_settings_menu_item' ],       10, 2   );
         // add_action( 'gform_settings_gravityhopper_cck',             [ $this, 'add_settings_page' ]                          );
         add_action( 'gform_form_settings_page_gravityhopper_cck',   [ $this, 'add_form_settings_subview_page' ]             );
-        add_action( 'forms_page_gravityhopper_cck',                 [ $this, 'print_file_load_disclaimer' ]                );
+        add_action( 'forms_page_gravityhopper_cck',                 [ $this, 'print_file_load_disclaimer' ]                 );
         add_action( 'admin_enqueue_scripts',                        [ $this, 'enqueue_editor_script' ]                      );
 
         add_action( 'gform_after_save_form',                        [ $this, 'maybe_create_form_file' ],            10, 2   );
@@ -75,7 +75,7 @@ class GH_CCK extends GFAddOn {
         add_action( 'gform_forms_post_import',                      [ $this, 'maybe_create_form_files' ],           10, 2   );
         add_action( 'gform_after_delete_form',                      [ $this, 'remove_form_file' ]                           );
         add_action( 'wp_ajax_create_form_file',                     [ $this, 'ajax_create_form_file' ]                      );
-        add_action( 'wp_ajax_create_prefixed_file',                 [ $this, 'ajax_create_prefixed_file' ]                      );
+        add_action( 'wp_ajax_create_prefixed_file',                 [ $this, 'ajax_create_prefixed_file' ]                  );
         add_action( 'wp_ajax_save_file',                            [ $this, 'ajax_save_file' ]                             );
         add_action( 'wp_ajax_delete_file',                          [ $this, 'ajax_delete_file' ]                           );
 
@@ -449,7 +449,7 @@ class GH_CCK extends GFAddOn {
         }
 
         $file_name = sanitize_text_field( $_POST['data']['fileName'] );
-        $file_contents = stripslashes(urldecode( $_POST['data']['fileContent'] ));
+        $file_contents = stripslashes( urldecode( $_POST['data']['fileContent'] ) );
 
         $test = $this->test_file_edits( $file_name, $file_contents );
 
@@ -824,7 +824,8 @@ class GH_CCK extends GFAddOn {
             'preview' => false,
             'title' => '',
             'show_path' => true,
-            'allow_delete' => true
+            'allow_delete' => true,
+            'open_file' => apply_filters( 'gravityhopper-cck/open_file_uri', false, $file_name ),
         );
 
         $file_slug = GH_CCK::get_file_slug( $file_name );
@@ -855,6 +856,16 @@ class GH_CCK extends GFAddOn {
         
         } else { $collapse_control = ''; }
 
+        if ( is_array( $args['open_file'] ) && array_key_exists( 'app', $args['open_file'] ) && array_key_exists( 'protocol', $args['open_file'] ) && array_key_exists( 'path', $args['open_file'] ) ) {
+            
+            ob_start(); ?>
+            
+                <a href="<?= $args['open_file']['protocol'] . $args['open_file']['path']; ?>" class="gform-settings-panel__open_file-link"><?php printf( esc_html__( 'Open in %s', 'gravityforms' ), $args['open_file']['app'] ); ?></a>
+            
+            <?php $app_link = ob_get_clean();
+        
+        } else { $app_link = ''; }
+
         ob_start(); ?>
 
             <fieldset id="<?= $file_slug; ?>" class="gravityhopper_cck_editor gform-settings-panel gform-settings-panel--with-title <?= $collapse_classes; ?>">
@@ -862,6 +873,7 @@ class GH_CCK extends GFAddOn {
                     <?= $args['title']; ?><?php if ( $args['show_path'] ) : ?><code style="font-size: 70%; margin-left: 2em;"><?php esc_html_e( $file_name ); ?></code><?php endif; ?>
                 </legend>
                 <?= $collapse_control; ?>
+                <?= $app_link; ?>
                 <div class="gform-settings-panel__content" style="max-width: 858px;">
 
                     <?php
