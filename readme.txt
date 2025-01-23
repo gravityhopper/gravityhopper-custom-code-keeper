@@ -5,7 +5,7 @@ Tags: gravity, code, developer, php, snippets
 Requires PHP: 7.4
 Requires at least: 5.6
 Tested up to: 6.5.4
-Stable tag: 3.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,21 +30,33 @@ PHP Code Keeper for Gravity Forms…
 
 PHP Code Keeper provides orderliness to your code customizations, gives you a better sense of the specific code running across your site, and helps ensure your customizations are not lost when other site modifications are made.
 
-Learn more in the walk-through article _[What is PHP Code Keeper for Gravity Forms?](https://gravityhopper.com/custom-code-keeper-for-gravity-forms/)_
+Learn more in the walk-through article _[What is PHP Code Keeper for Gravity Forms?](https://orbitalforge.com/custom-code-keeper-for-gravity-forms/)_
 
 = Need more for your Gravity Forms development? =
 
-Saving you time and effort with every form you build, **[Gravity Hopper](https://gravityhopper.com)** offers an elite array of builder tools that integrates seamlessly with Gravity Forms.
+Saving you time and effort with every form you build, **[Orbital Forge](https://orbitalforge.com)** offers an elite array of builder tools that integrates seamlessly with Gravity Forms.
 
 == Frequently Asked Questions ==
 
 = Does PHP Code Keeper load custom code per form? =
 
-No. This plugin is intended for code wrangling only and does not restrict when code is run. AAll code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
+No. This plugin is intended for code wrangling only and does not restrict when code is run. All code from allowed files residing in the `gravity_hopper/code/` directory will run for all forms. Always use appropriate hooks and/or conditional checks when targeting specific forms and fields.
 
 = Can I edit the custom code from within my WordPress dashboard? =
 
 Yes! Create, edit, and delete files via **Forms → Code** and **Form → Settings → Code Keep**
+
+You can also add a link to open the files directly in your preferred code editor using the filter `gravityhopper-cck/opoen_file_uri`.
+
+```
+add_filter( 'gravityhopper-cck/open_file_uri', function( $uri, $filename ) {
+	return array(
+		'app' 		=> 'VS Code',
+		'protocol' 	=> 'vscode:/',
+		'path'		=> $filename
+	);
+}, 10, 2 );
+```
 
 = How are files loaded? =
 
@@ -57,6 +69,14 @@ Any files matching prefix patterns allowed via the filter `gravityhopper-cck/all
 Finally, any form-specific files named using the convention `gform-00xx.php` will be loaded next, provided a form matching the ID exists on the site.
 
 == Changelog ==
+
+= 3.1 // 2025.01-Jan.23 =
+📦 NEW: Adds `gravityhopper-cck/open_file_uri` filter
+📖 DOC: Rebrands authorship to Orbital Forge
+
+= 3.0.1 // 2024.11-Nov.01 =
+✨ IMPROVE: Remove unnecessary logging
+✨ IMPROVE: Adjust height of editor to ensure visibility of last line
 
 = 3.0 // 2024.06-Jun.19 =
 📦 NEW: Allows file editing and management via UI
